@@ -1,0 +1,263 @@
+/* styles.css */
+:root {
+  --dettagli-principali: #F4D59E;
+  --dettagli-secondari: #70453B;
+  --sfondi: #161922;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: var(--sfondi);
+  color: #e0e0e0;
+}
+
+nav {
+  background-color: #2c2c2c;
+  color: white;
+  padding: 10px 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.nav-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+}
+
+.logo {
+  height: 40px;
+}
+
+nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+nav ul li {
+  margin: 0 15px;
+}
+
+nav ul li a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+header {
+  background: url('path/to/your/background-image.jpg') no-repeat center center;
+  background-size: cover;
+  color: white;
+  padding: 80px 0 40px;
+  text-align: center;
+  position: relative;
+}
+
+.header-content {
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 20px;
+  border-radius: 10px;
+  display: inline-block;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 3em;
+  font-family: 'Georgia', serif;
+}
+
+header p {
+  margin: 10px 0 0;
+  font-size: 1.5em;
+  font-family: 'Georgia', serif;
+}
+
+section {
+  padding: 40px;
+  margin: 40px 0;
+  background-color: #2c2c2c;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+}
+
+section h2 {
+  font-size: 2.5em;
+  margin-bottom: 20px;
+  color: #f0f0f0;
+  font-family: 'Georgia', serif;
+}
+
+.product {
+  border: 1px solid #444;
+  padding: 30px;
+  margin: 20px 0;
+  background-color: #3c3c3c;
+  border-radius: 10px;
+}
+
+.product h3 {
+  margin-top: 0;
+  color: #f0f0f0;
+  font-family: 'Georgia', serif;
+}
+
+.product p {
+  color: #d0d0d0;
+}
+
+.product button {
+  background-color: #555;
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  cursor: pointer;
+  border-radius: 10px;
+  font-size: 1em;
+}
+
+.product button:hover {
+  background-color: var(--dettagli-secondari);
+}
+
+#messageSection {
+  background-color: #2c2c2c;
+  padding: 30px;
+  border-radius: 10px;
+}
+
+#messageForm input {
+  padding: 15px;
+  margin-right: 10px;
+  border: 1px solid #444;
+  border-radius: 10px;
+  background-color: #3c3c3c;
+  color: #e0e0e0;
+}
+
+#messageForm button {
+  background-color: #555;
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  cursor: pointer;
+  border-radius: 10px;
+  font-size: 1em;
+}
+
+#messageForm button:hover {
+  background-color: #666;
+}
+
+#contact {
+  background-color: #2c2c2c;
+  padding: 30px;
+  border-radius: 10px;
+}
+
+#contactForm label {
+  display: block;
+  margin-bottom: 10px;
+  color: #f0f0f0;
+  font-family: 'Georgia', serif;
+}
+
+#contactForm input,
+#contactForm textarea {
+  width: 100%;
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid #444;
+  border-radius: 10px;
+  background-color: #3c3c3c;
+  color: #e0e0e0;
+}
+
+#contactForm button {
+  background-color: #555;
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  cursor: pointer;
+  border-radius: 10px;
+  font-size: 1em;
+}
+
+#contactForm button:hover {
+  background-color: var(--dettagli-secondari);
+}
+
+#youtube {
+  padding: 30px;
+  margin: 40px 0;
+  background-color: #2c2c2c;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+}
+
+#youtube h2 {
+  font-size: 2.5em;
+  margin-bottom: 20px;
+  color: #f0f0f0;
+  font-family: 'Georgia', serif;
+}
+
+#youtube p {
+  color: #d0d0d0;
+}
+
+#youtube a {
+  display: flex;
+  align-items: center;
+  color: var(--dettagli-principali);
+  text-decoration: none;
+}
+
+#youtube a:hover {
+  text-decoration: underline;
+}
+
+#youtube ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+#youtube li {
+  margin: 20px 0;
+}
+
+#youtube img {
+  width: 150px;
+  height: auto;
+  margin-right: 20px;
+  vertical-align: middle;
+}
+
+.youtube-logo {
+  width: 100px;
+  height: auto;
+  margin-right: 20px;
+  vertical-align: middle;
+  border-radius: 50%;
+}
+
+#youtubeVideo {
+  margin-top: 20px;
+}
+
+footer {
+  background-color: var(--sfondi);
+  color: var(--dettagli-principali);
+  text-align: center;
+  padding: 20px 0;
+  font-family: 'Georgia', serif;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+}
