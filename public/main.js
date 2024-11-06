@@ -124,4 +124,12 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
+
+  // Add event listener for youtubeVideo element
+  const videoElement = document.querySelector('.youtube-video');
+  if (videoElement) {
+    // YouTube initialization code
+  } else {
+    console.warn('YouTube container not found - skipping initialization');
+  }
 });
