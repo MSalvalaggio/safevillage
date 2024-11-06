@@ -1,6 +1,6 @@
 {
   "short_name": "SafeVillage",
-  "name": "SafeVillage Studio",
+  "name": "SafeVillage Studio - Handcrafted Furniture",
   "icons": [
     {
       "src": "favicon.ico",
@@ -11,6 +11,11 @@
       "src": "icons/logo192.png",
       "type": "image/png",
       "sizes": "192x192"
+    },
+    {
+      "src": "icons/logo512.png",
+      "type": "image/png",
+      "sizes": "512x512"
     }
   ],
   "start_url": ".",
