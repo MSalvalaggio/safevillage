@@ -2,22 +2,26 @@ document.addEventListener('DOMContentLoaded', () => {
   const YOUTUBE_API_KEY = 'AIzaSyBeLvIFmQjYt-AM9KBUqVUnYB60MrCVhHE'; // Inserisci qui la tua chiave API
   const CHANNEL_ID = 'UCHPszxtOERYU6gzWmBHytJQ'; // Inserisci qui l'ID del tuo canale
   
-  // Effettua una richiesta all'API quando la pagina viene caricata
-  fetch('/api/data')
-    .then(response => {
+  async function fetchData() {
+    try {
+      const response = await fetch('/api/data');
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      const contentType = response.headers.get('content-type');
-      if (!contentType || !contentType.includes('application/json')) {
-        throw new TypeError("Dati non in formato JSON!");
-      }
-      return response.json();
-    })
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.warn('API fetch failed:', error);
+      return null; // Return fallback data or null
+    }
+  }
+
+  // Effettua una richiesta all'API quando la pagina viene caricata
+  fetchData()
     .then(data => {
       const messageElement = document.getElementById('message');
       if (messageElement) {
-        messageElement.textContent = data.length > 0 ? data[0].message : 'Nessun dato disponibile';
+        messageElement.textContent = data && data.length > 0 ? data[0].message : 'Nessun dato disponibile';
       }
     })
     .catch(error => {
@@ -32,21 +36,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const fetchButton = document.getElementById('fetchFirstDocument');
   if (fetchButton) {
     fetchButton.addEventListener('click', () => {
-      fetch('/api/data')
-        .then(response => {
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          const contentType = response.headers.get('content-type');
-          if (!contentType || !contentType.includes('application/json')) {
-            throw new TypeError("Dati non in formato JSON!");
-          }
-          return response.json();
-        })
+      fetchData()
         .then(data => {
           const messageElement = document.getElementById('message');
           if (messageElement) {
-            messageElement.textContent = data.length > 0 ? data[0].message : 'Nessun dato disponibile';
+            messageElement.textContent = data && data.length > 0 ? data[0].message : 'Nessun dato disponibile';
           }
         })
         .catch(error => {
