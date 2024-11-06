@@ -72,7 +72,7 @@ function App() {
         <h2>About Our Milan Workshop</h2>
         <div className="about-content">
           <img 
-            src="/images/artisan-woodworker-milan-workshop.jpg" 
+            src="/images/artisan-woodworker-milan-workshop.png" 
             alt="Master woodworker crafting furniture in Milan workshop" 
             className="about-image"
             loading="lazy"
@@ -86,7 +86,7 @@ function App() {
         <div className="product-grid">
           <div className="product-card">
             <img 
-              src="/images/handcrafted-oak-dining-table-milan.jpg" 
+              src="/images/handcrafted-oak-dining-table-milan.png" 
               alt="Handcrafted solid oak dining table made in Milan" 
               loading="lazy"
             />
@@ -101,7 +101,9 @@ function App() {
       <section className="youtube-section" id="youtube">
         <h2>Workshop Videos</h2>
         <div className="youtube-container">
-          {channelInfo && videos.length > 0 && (
+          {!channelInfo && !videos.length ? (
+            <p>Loading videos...</p>
+          ) : channelInfo && videos.length > 0 ? (
             <div className="youtube-layout">
               <div className="channel-info">
                 <p className="channel-description">{channelInfo.snippet.description}</p>
@@ -117,14 +119,21 @@ function App() {
                 </div>
               </div>
               
-              <div className="featured-video">
-                <iframe 
-                  src={`https://www.youtube.com/embed/${videos[0].id.videoId}`}
-                  title="Video in evidenza"
-                  allowFullScreen
-                />
+              <div className="videos-grid">
+                {videos.map((video) => (
+                  <div key={video.id.videoId} className="video-item">
+                    <iframe
+                      src={`https://www.youtube.com/embed/${video.id.videoId}`}
+                      title={video.snippet.title}
+                      allowFullScreen
+                    />
+                    <h3>{video.snippet.title}</h3>
+                  </div>
+                ))}
               </div>
             </div>
+          ) : (
+            <p>No videos available</p>
           )}
         </div>
       </section>
@@ -151,7 +160,7 @@ function App() {
       <footer>
         <p>Contact me for custom orders</p>
         <div className="social-links">
-          <a href="https://youtube.com/safevillagestudio" target="_blank" rel="noopener noreferrer">YouTube</a>
+          <a href="https://youtube.com/@SafeVillageStudio" target="_blank" rel="noopener noreferrer">YouTube</a>
           {/* Add more social links */}
         </div>
       </footer>
