@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/safevillage/static/css/main.ac8031da.css",
+    "main.js": "/safevillage/static/js/main.7efe5b88.js",
+    "static/js/453.039c0d69.chunk.js": "/safevillage/static/js/453.039c0d69.chunk.js",
+    "index.html": "/safevillage/index.html",
+    "main.ac8031da.css.map": "/safevillage/static/css/main.ac8031da.css.map",
+    "main.7efe5b88.js.map": "/safevillage/static/js/main.7efe5b88.js.map",
+    "453.039c0d69.chunk.js.map": "/safevillage/static/js/453.039c0d69.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.ac8031da.css",
+    "static/js/main.7efe5b88.js"
+  ]
+}
