@@ -1,11 +1,37 @@
 import { useEffect, useState } from 'react';
+import { HashRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import './App.css';
+import logo from './images/logo.jpg';
+import artisanWorkshop from './images/artisan-woodworker-milan-workshop.png';
+import diningTable from './images/handcrafted-oak-dining-table-milan.png';
+import Products from './components/Products';
+import ProductDetail from './components/ProductDetail'; // Import the ProductDetail component
+// Add more product images imports here
 
 function App() {
   const [channelInfo, setChannelInfo] = useState(null);
   const [videos, setVideos] = useState([]);
   const YOUTUBE_API_KEY = 'AIzaSyBeLvIFmQjYt-AM9KBUqVUnYB60MrCVhHE';
   const CHANNEL_ID = 'UCHPszxtOERYU6gzWmBHytJQ';
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const products = [
+    {
+      image: diningTable,
+      title: "Tuscan Oak Dining Table",
+      description: "Elegant solid oak dining table handcrafted in Milan. Features traditional Italian joinery and natural finish.",
+      specs: "Dimensions: 180x90cm • Solid Oak • Made in Milan"
+    },
+    // Add more products here with similar structure
+  ];
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % products.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev === 0 ? products.length - 1 : prev - 1));
+  };
 
   useEffect(() => {
     const fetchYouTubeData = async () => {
@@ -19,19 +45,14 @@ function App() {
           setChannelInfo(channelData.items[0]);
         }
 
-        // Fetch videos
+        // Fetch only one video
         const videosResponse = await fetch(
-          `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&maxResults=10&order=date&type=video&key=${YOUTUBE_API_KEY}`
+          `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&maxResults=1&order=date&type=video&key=${YOUTUBE_API_KEY}`
         );
         const videosData = await videosResponse.json();
         
         if (videosData.items?.length > 0) {
-          // Filter out Shorts videos
-          const nonShortsVideos = videosData.items.filter(video => 
-            !video.snippet.title.toLowerCase().includes('#shorts')
-          ).slice(0, 4); // Only take first 4 non-Shorts videos
-
-          setVideos(nonShortsVideos);
+          setVideos(videosData.items);
         }
       } catch (error) {
         console.error('Error fetching YouTube data:', error);
@@ -41,130 +62,235 @@ function App() {
     fetchYouTubeData();
   }, []);
 
+  useEffect(() => {
+    // Mobile menu toggle
+    const mobileMenu = document.querySelector('.mobile-menu');
+    const navLinks = document.querySelector('.nav-links');
+    
+    if (mobileMenu && navLinks) {
+      mobileMenu.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+        mobileMenu.classList.toggle('active');
+      });
+
+      // Close mobile menu when clicking a link
+      const navItems = document.querySelectorAll('.nav-links a');
+      navItems.forEach(item => {
+        item.addEventListener('click', () => {
+          navLinks.classList.remove('active');
+          mobileMenu.classList.remove('active');
+        });
+      });
+    }
+
+    // Smooth scrolling only for anchor links (not route links)
+    document.querySelectorAll('a[href^="#"]:not([href*="/"])').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href');
+        const targetElement = document.querySelector(targetId);
+        
+        if (targetElement) {
+          targetElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+  }, []); // Empty dependency array means this runs once on mount
+
+  // Add this function to handle smooth scrolling
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   return (
-    <div className="App">
-      <nav className="main-nav">
-        <div className="nav-logo">
-          <a href="#home">
-            <img src="/images/logo.jpg" alt="Artisan Tables Logo" className="logo-image" />
-          </a>
-        </div>
-        <ul className="nav-links">
-          <li><a href="#home">Home</a></li>
-          <li><a href="#about">About</a></li>
-          <li><a href="#products">Products</a></li>
-          <li><a href="#youtube">Videos</a></li>
-          <li><a href="#contact">Contact</a></li>
-        </ul>
-        <button className="mobile-menu" aria-label="Menu">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
-      </nav>
-
-      <header className="hero" id="home">
-        <h1>SafeVillage Studio - Handcrafted Furniture in Milan, Italy</h1>
-        <p>Artisanal Woodworking & Custom Furniture Design</p>
-      </header>
-
-      <section className="about" id="about">
-        <h2>About Our Milan Workshop</h2>
-        <div className="about-content">
-          <img 
-            src="/images/artisan-woodworker-milan-workshop.png" 
-            alt="Master woodworker crafting furniture in Milan workshop" 
-            className="about-image"
-            loading="lazy"
-          />
-          <p>From our workshop in the heart of Milan, we create bespoke furniture pieces that combine traditional Italian craftsmanship with modern design.</p>
-        </div>
-      </section>
-
-      <section className="products" id="products">
-        <h2>Our Handcrafted Collection</h2>
-        <div className="product-grid">
-          <div className="product-card">
-            <img 
-              src="/images/handcrafted-oak-dining-table-milan.png" 
-              alt="Handcrafted solid oak dining table made in Milan" 
-              loading="lazy"
-            />
-            <h3>Tuscan Oak Dining Table</h3>
-            <p>Elegant solid oak dining table handcrafted in Milan. Features traditional Italian joinery and natural finish.</p>
-            <p className="product-specs">Dimensions: 180x90cm • Solid Oak • Made in Milan</p>
+    <Router>
+      <div className="App">
+        <nav className="main-nav">
+          <div className="nav-logo">
+            <Link to="/">
+              <img
+                src={logo}
+                alt="Artisan Tables Logo"
+                className="logo-image"
+              />
+            </Link>
           </div>
-          {/* Add more product cards as needed */}
-        </div>
-      </section>
+          <ul className="nav-links">
+            <li><Link to="/" onClick={() => scrollToSection('home')}>Home</Link></li>
+            <li><Link to="/" onClick={() => scrollToSection('about')}>About</Link></li>
+            <li><Link to="/products">Products</Link></li>
+            <li><Link to="/" onClick={() => scrollToSection('youtube')}>Videos</Link></li>
+            <li><Link to="/" onClick={() => scrollToSection('contact')}>Contact</Link></li>
+          </ul>
+          <button className="mobile-menu" aria-label="Menu">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </nav>
 
-      <section className="youtube-section" id="youtube">
-        <h2>Workshop Videos</h2>
-        <div className="youtube-container">
-          {!channelInfo && !videos.length ? (
-            <p>Loading videos...</p>
-          ) : channelInfo && videos.length > 0 ? (
-            <div className="youtube-layout">
-              <div className="channel-info">
-                <p className="channel-description">{channelInfo.snippet.description}</p>
-                <div className="channel-stats">
-                  <div className="stat">
-                    <span className="stat-number">{Number(channelInfo.statistics.subscriberCount).toLocaleString()}</span>
-                    <span className="stat-label">Iscritti</span>
+        <main className="main-content">
+          <Routes>
+            <Route path="/" element={
+              <>
+                <header className="hero" id="home">
+                  <img 
+                    src={artisanWorkshop} 
+                    alt="SafeVillage Studio Workshop" 
+                    className="hero-image"
+                  />
+                  <div className="hero-content">
+                    <h1>SafeVillage Studio</h1>
+                    <p>Artisanal Woodworking & Custom Furniture Design</p>
                   </div>
-                  <div className="stat">
-                    <span className="stat-number">{Number(channelInfo.statistics.videoCount).toLocaleString()}</span>
-                    <span className="stat-label">Video</span>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="videos-grid">
-                {videos.map((video) => (
-                  <div key={video.id.videoId} className="video-item">
-                    <iframe
-                      src={`https://www.youtube.com/embed/${video.id.videoId}`}
-                      title={video.snippet.title}
-                      allowFullScreen
+                </header>
+
+                <section className="about" id="about">
+                  <div className="about-content">
+                    <div className="about-text">
+                      <h2>About Our Milan Workshop</h2>
+                      <p>
+                        In the heart of Milan's artisan district, our workshop is where traditional Italian craftsmanship meets contemporary design. With over a decade of experience, we specialize in creating bespoke wooden furniture that tells a unique story.
+                      </p>
+                      <p>
+                        Each piece is meticulously handcrafted using select hardwoods and time-honored joinery techniques, ensuring both beauty and longevity. Our commitment to sustainable practices means we source local materials and minimize waste through careful planning.
+                      </p>
+                      <p>
+                        From custom dining tables to unique home accessories, every creation reflects our passion for woodworking and attention to detail. We work closely with clients to bring their vision to life, creating pieces that will be cherished for generations.
+                      </p>
+                    </div>
+                    <img 
+                      src={artisanWorkshop}
+                      alt="Master woodworker crafting furniture in Milan workshop" 
+                      className="about-image"
+                      loading="lazy"
                     />
-                    <h3>{video.snippet.title}</h3>
                   </div>
-                ))}
-              </div>
-            </div>
-          ) : (
-            <p>No videos available</p>
-          )}
-        </div>
-      </section>
+                </section>
 
-      <section className="contact" id="contact">
-        <h2>Contact Our Milan Studio</h2>
-        <form id="contactForm" className="contact-form">
-          <div className="form-group">
-            <label htmlFor="name">Name:</label>
-            <input type="text" id="name" name="name" required />
-          </div>
-          <div className="form-group">
-            <label htmlFor="email">Email:</label>
-            <input type="email" id="email" name="email" required />
-          </div>
-          <div className="form-group">
-            <label htmlFor="message">Message:</label>
-            <textarea id="message" name="message" required></textarea>
-          </div>
-          <button type="submit">Send Message</button>
-        </form>
-      </section>
+                <section className="products" id="products">
+                  <h2>Our Handcrafted Collection</h2>
+                  <div className="carousel-container">
+                    <button className="carousel-button prev" onClick={prevSlide} aria-label="Previous product">
+                      ←
+                    </button>
+                    
+                    <div className="carousel-content">
+                      {products.map((product, index) => (
+                        <div 
+                          key={index}
+                          className={`carousel-slide ${index === currentSlide ? 'active' : ''}`}
+                          style={{ transform: `translateX(${100 * (index - currentSlide)}%)` }}
+                        >
+                          <div className="product-card">
+                            <img 
+                              src={product.image}
+                              alt={product.title}
+                              loading="lazy"
+                            />
+                            <h3>{product.title}</h3>
+                            <p>{product.description}</p>
+                            <p className="product-specs">{product.specs}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
 
-      <footer>
-        <p>Contact me for custom orders</p>
-        <div className="social-links">
-          <a href="https://youtube.com/@SafeVillageStudio" target="_blank" rel="noopener noreferrer">YouTube</a>
-          {/* Add more social links */}
-        </div>
-      </footer>
-    </div>
+                    <button className="carousel-button next" onClick={nextSlide} aria-label="Next product">
+                      →
+                    </button>
+
+                    <div className="carousel-indicators">
+                      {products.map((_, index) => (
+                        <button
+                          key={index}
+                          className={`indicator ${index === currentSlide ? 'active' : ''}`}
+                          onClick={() => setCurrentSlide(index)}
+                          aria-label={`Go to slide ${index + 1}`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </section>
+
+                <section className="youtube-section" id="youtube">
+                  <h2>Workshop Videos</h2>
+                  <div className="youtube-container">
+                    {!channelInfo && !videos.length ? (
+                      <p>Loading videos...</p>
+                    ) : channelInfo && videos.length > 0 ? (
+                      <div className="youtube-layout">
+                        <div className="featured-video">
+                          <iframe
+                            src={`https://www.youtube.com/embed/${videos[0].id.videoId}`}
+                            title={videos[0].snippet.title}
+                            allowFullScreen
+                          />
+                        </div>
+                        <div className="channel-info">
+                          <p className="channel-description">{channelInfo.snippet.description}</p>
+                          <div className="channel-stats">
+                            <div className="stat">
+                              <span className="stat-number">{Number(channelInfo.statistics.subscriberCount).toLocaleString()}</span>
+                              <span className="stat-label">Iscritti</span>
+                            </div>
+                            <div className="stat">
+                              <span className="stat-number">{Number(channelInfo.statistics.videoCount).toLocaleString()}</span>
+                              <span className="stat-label">Video</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <p>No videos available</p>
+                    )}
+                  </div>
+                </section>
+
+                <section className="contact" id="contact">
+                  <h2>Contact Our Milan Studio</h2>
+                  <form id="contactForm" className="contact-form">
+                    <div className="form-group">
+                      <label htmlFor="name">Name:</label>
+                      <input type="text" id="name" name="name" required />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="email">Email:</label>
+                      <input type="email" id="email" name="email" required />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="message">Message:</label>
+                      <textarea id="message" name="message" required></textarea>
+                    </div>
+                    <button type="submit">Send Message</button>
+                  </form>
+                </section>
+              </>
+            } />
+            <Route path="/products" element={<Products />} />
+            <Route path="/products/:id" element={<ProductDetail />} />
+            {/* Add other routes as needed */}
+          </Routes>
+        </main>
+
+        <footer>
+          <p>Contact me for custom orders</p>
+          <div className="social-links">
+            <a href="https://youtube.com/@SafeVillageStudio" target="_blank" rel="noopener noreferrer">YouTube</a>
+            <a href="https://instagram.com/safevillagestudio" target="_blank" rel="noopener noreferrer">Instagram</a>
+            <a href="https://facebook.com/safevillagestudio" target="_blank" rel="noopener noreferrer">Facebook</a>
+            <a href="https://tiktok.com/@safevillagestudio" target="_blank" rel="noopener noreferrer">TikTok</a>
+            <a href="https://threads.net/@safevillagestudio" target="_blank" rel="noopener noreferrer">Threads</a>
+          </div>
+        </footer>
+      </div>
+    </Router>
   );
 }
 
