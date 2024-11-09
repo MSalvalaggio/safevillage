@@ -125,6 +125,37 @@ h3 { font-size: clamp(1.5rem, 3vw, 2rem); }
   color: var(--accent);
 }
 
+/* Logout button styles */
+.nav-links button {
+  background-color: var(--accent);
+  color: var(--text-primary);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all 0.3s ease;
+}
+
+.nav-links button:hover {
+  background-color: var(--accent-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(178, 113, 72, 0.2);
+}
+
+.nav-links button:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+  .nav-links button {
+    width: 100%;
+    margin: 0.5rem 0;
+  }
+}
+
 /* Mobile menu button */
 .mobile-menu {
   display: none;
@@ -1267,4 +1298,64 @@ html {
   .image-zoom-wrapper img {
     transform: none !important;
   }
+}
+
+/* Authentication form styles */
+.auth-form {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.auth-form h2 {
+  text-align: center;
+}
+
+.auth-form form {
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-form input {
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+
+.auth-form button {
+  padding: 0.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.auth-form p {
+  text-align: center;
+}
+
+.auth-form a {
+  color: #007BFF;
+  text-decoration: none;
+}
+
+.auth-form a:hover {
+  text-decoration: underline;
+}
+
+/* Admin Panel Styles */
+.admin-panel {
+  padding: 2rem;
+  margin-top: 80px;
+}
+
+.nav-links li:has(> a[href="/admin/products"]) {
+  background-color: var(--accent);
+  border-radius: 4px;
+}
+
+.nav-links li:has(> a[href="/admin/products"]):hover {
+  background-color: var(--accent-hover);
+}
+
+.nav-links li:has(> a[href="/admin/products"]) a {
+  color: var(--text-primary);
 }

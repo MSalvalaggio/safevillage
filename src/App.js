@@ -1,19 +1,28 @@
 import { useEffect, useState } from 'react';
-import { HashRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
+import { auth } from './firebase';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import Login from './components/Login';
+import Signup from './components/Signup';
 import './App.css';
 import logo from './images/logo.jpg';
 import artisanWorkshop from './images/artisan-woodworker-milan-workshop.png';
 import diningTable from './images/handcrafted-oak-dining-table-milan.png';
 import Products from './components/Products';
 import ProductDetail from './components/ProductDetail'; // Import the ProductDetail component
+import AdminProducts from './components/AdminProducts'; // Import the AdminProducts component
 // Add more product images imports here
 
 function App() {
   const [channelInfo, setChannelInfo] = useState(null);
   const [videos, setVideos] = useState([]);
-  const YOUTUBE_API_KEY = 'AIzaSyBeLvIFmQjYt-AM9KBUqVUnYB60MrCVhHE';
+  const [showYoutube, setShowYoutube] = useState(true); // Always show YouTube section
+  const YOUTUBE_API_KEY = process.env.REACT_APP_YOUTUBE_API_KEY;
+  console.log('YOUTUBE_API_KEY:', YOUTUBE_API_KEY);
   const CHANNEL_ID = 'UCHPszxtOERYU6gzWmBHytJQ';
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [user, setUser] = useState(null);
+  const isAdmin = user?.uid === "1ph4IGD1DTY4rXUct7kBrnYAWdD3";
 
   const products = [
     {
@@ -100,12 +109,29 @@ function App() {
     });
   }, []); // Empty dependency array means this runs once on mount
 
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
   // Add this function to handle smooth scrolling
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+  };
+
+  // Add this component for protected routes
+  const ProtectedRoute = ({ children }) => {
+    if (!isAdmin) {
+      return <Navigate to="/" replace />;
+    }
+    return children;
   };
 
   return (
@@ -127,6 +153,19 @@ function App() {
             <li><Link to="/products">Products</Link></li>
             <li><Link to="/" onClick={() => scrollToSection('youtube')}>Videos</Link></li>
             <li><Link to="/" onClick={() => scrollToSection('contact')}>Contact</Link></li>
+            {isAdmin && (
+              <li><Link to="/admin/products">Admin Panel</Link></li>
+            )}
+            {user ? (
+              <li>
+                <button onClick={() => signOut(auth)}>Logout</button>
+              </li>
+            ) : (
+              <>
+                <li><Link to="/login">Login</Link></li>
+                <li><Link to="/signup">Signup</Link></li> {/* Fixed: Added closing tag */}
+              </>
+            )}
           </ul>
           <button className="mobile-menu" aria-label="Menu">
             <span></span>
@@ -219,39 +258,41 @@ function App() {
                   </div>
                 </section>
 
-                <section className="youtube-section" id="youtube">
-                  <h2>Workshop Videos</h2>
-                  <div className="youtube-container">
-                    {!channelInfo && !videos.length ? (
-                      <p>Loading videos...</p>
-                    ) : channelInfo && videos.length > 0 ? (
-                      <div className="youtube-layout">
-                        <div className="featured-video">
-                          <iframe
-                            src={`https://www.youtube.com/embed/${videos[0].id.videoId}`}
-                            title={videos[0].snippet.title}
-                            allowFullScreen
-                          />
-                        </div>
-                        <div className="channel-info">
-                          <p className="channel-description">{channelInfo.snippet.description}</p>
-                          <div className="channel-stats">
-                            <div className="stat">
-                              <span className="stat-number">{Number(channelInfo.statistics.subscriberCount).toLocaleString()}</span>
-                              <span className="stat-label">Iscritti</span>
-                            </div>
-                            <div className="stat">
-                              <span className="stat-number">{Number(channelInfo.statistics.videoCount).toLocaleString()}</span>
-                              <span className="stat-label">Video</span>
+                {showYoutube && (
+                  <section className="youtube-section" id="youtube">
+                    <h2>Workshop Videos</h2>
+                    <div className="youtube-container">
+                      {!channelInfo && !videos.length ? (
+                        <p>Loading videos...</p>
+                      ) : channelInfo && videos.length > 0 ? (
+                        <div className="youtube-layout">
+                          <div className="featured-video">
+                            <iframe
+                              src={`https://www.youtube.com/embed/${videos[0].id.videoId}`}
+                              title={videos[0].snippet.title}
+                              allowFullScreen
+                            />
+                          </div>
+                          <div className="channel-info">
+                            <p className="channel-description">{channelInfo.snippet.description}</p>
+                            <div className="channel-stats">
+                              <div className="stat">
+                                <span className="stat-number">{Number(channelInfo.statistics.subscriberCount).toLocaleString()}</span>
+                                <span className="stat-label">Iscritti</span>
+                              </div>
+                              <div className="stat">
+                                <span className="stat-number">{Number(channelInfo.statistics.videoCount).toLocaleString()}</span>
+                                <span className="stat-label">Video</span>
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    ) : (
-                      <p>No videos available</p>
-                    )}
-                  </div>
-                </section>
+                      ) : (
+                        <p>No videos available</p>
+                      )}
+                    </div>
+                  </section>
+                )}
 
                 <section className="contact" id="contact">
                   <h2>Contact Our Milan Studio</h2>
@@ -275,6 +316,16 @@ function App() {
             } />
             <Route path="/products" element={<Products />} />
             <Route path="/products/:id" element={<ProductDetail />} />
+            <Route 
+              path="/admin/products" 
+              element={
+                <ProtectedRoute>
+                  <AdminProducts />
+                </ProtectedRoute>
+              } 
+            />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
             {/* Add other routes as needed */}
           </Routes>
         </main>

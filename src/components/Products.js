@@ -1,5 +1,7 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { getStorage, ref, getDownloadURL, listAll } from 'firebase/storage';
+import { getFirestore, doc, getDoc, collection, getDocs } from 'firebase/firestore';
 import diningTable from '../images/handcrafted-oak-dining-table-milan.png';
 import image1 from '../images/image1.png';
 import image2 from '../images/image2.png';
@@ -66,33 +68,57 @@ const ZoomableImage = ({ src, alt }) => {
 };
 
 function Products() {
+  const [loading, setLoading] = useState(true);
+  const [product, setProduct] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [relatedProducts, setRelatedProducts] = useState([]);
 
-  const product = {
-    name: "Tuscan Oak Dining Table",
-    price: "€1,200", // Added price
-    mainImage: diningTable,
-    gallery: [
-      diningTable,
-      // Add more image imports here
-    ],
-    description: `Crafted with precision in our Milan workshop, this elegant dining table 
-    exemplifies the perfect fusion of traditional Italian craftsmanship and contemporary design.`,
-    details: `The table features our signature mortise and tenon joinery, ensuring structural 
-    integrity that will last generations.`,
-    specifications: {
-      dimensions: "180cm L × 90cm W × 75cm H",
-      material: "Solid Oak",
-      finish: "Natural Oil",
-      weight: "45kg",
-      seating: "6-8 people",
-      construction: "Traditional Mortise & Tenon",
-      warranty: "10 years"
-    },
-    care: "Clean with damp cloth. Apply wood care oil every 6-12 months."
-  };
+  useEffect(() => {
+    const loadProductData = async () => {
+      try {
+        const storage = getStorage();
+        const db = getFirestore();
 
-  // Function to handle image change
+        // Get product data from Firestore
+        const productDoc = await getDoc(doc(db, 'products', 'tuscan-oak-table'));
+        const productData = productDoc.data();
+
+        // Get product images from Storage
+        const imagesRef = ref(storage, `products/${productData.id}/gallery`);
+        const imagesList = await listAll(imagesRef);
+        const imageUrls = await Promise.all(
+          imagesList.items.map(imageRef => getDownloadURL(imageRef))
+        );
+
+        // Get related products
+        const relatedProductsSnapshot = await getDocs(collection(db, 'products'));
+        const relatedProductsData = [];
+        for (const doc of relatedProductsSnapshot.docs) {
+          const data = doc.data();
+          const thumbnailRef = ref(storage, `products/${doc.id}/thumbnail.jpg`);
+          const thumbnailUrl = await getDownloadURL(thumbnailRef);
+          relatedProductsData.push({
+            id: doc.id,
+            ...data,
+            image: thumbnailUrl
+          });
+        }
+
+        setProduct({
+          ...productData,
+          gallery: imageUrls
+        });
+        setRelatedProducts(relatedProductsData);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error loading product data:', error);
+        setLoading(false);
+      }
+    };
+
+    loadProductData();
+  }, []);
+
   const handleImageChange = (index) => {
     setCurrentImageIndex(index);
   };
@@ -107,22 +133,13 @@ function Products() {
     );
   };
 
-  // Array of related products for the carousel
-  const relatedProducts = [
-    {
-      id: '1', // Use strings to match URL params
-      name: 'Venetian Glass Coffee Table',
-      image: image1, // Use the imported image
-      price: '€800',
-    },
-    {
-      id: '2',
-      name: 'Florentine Walnut Sideboard',
-      image: image2,
-      price: '€1,500',
-    },
-    // Add more products here
-  ];
+  if (loading) {
+    return <div className="loading">Loading...</div>;
+  }
+
+  if (!product) {
+    return <div className="error">Product not found</div>;
+  }
 
   return (
     <section className="product-detail">
