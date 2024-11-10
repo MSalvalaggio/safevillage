@@ -11,7 +11,11 @@ import Products from './components/Products';
 import ProductDetail from './components/ProductDetail';
 import AdminProducts from './components/AdminProducts';
 import { ProductProvider, useProducts } from './context/ProductContext';
+import Admin from './components/Admin';
 // Add more product images imports here
+
+const CHANNEL_ID = 'UCHPszxtOERYU6gzWmBHytJQ';
+const ADMIN_UID = '1ph4IGD1DTY4rXUct7kBrnYAWdD3';
 
 function CarouselSection() {
   const { products, loading, error } = useProducts();
@@ -77,7 +81,6 @@ function CarouselSection() {
                 />
                 <h3>{product.name}</h3>
                 <p>{product.description}</p>
-                <p className="product-specs">{product.price}</p>
               </div>
             </div>
           ))}
@@ -107,10 +110,9 @@ function App() {
   const [videos, setVideos] = useState([]);
   const [showYoutube] = useState(true); // Added showYoutube state
   const [user, setUser] = useState(null);
-  const isAdmin = user?.uid === process.env.REACT_APP_ADMIN_UID;
+  const isAdmin = user?.uid === ADMIN_UID;
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const CHANNEL_ID = 'UCHPszxtOERYU6gzWmBHytJQ';
 
   // Remove products array since it's now in ProductContext
 
@@ -230,13 +232,15 @@ function App() {
               <li><Link to="/products">Products</Link></li>
               <li><Link to="/" onClick={() => scrollToSection('youtube')}>Videos</Link></li>
               <li><Link to="/" onClick={() => scrollToSection('contact')}>Contact</Link></li>
-              {isAdmin && (
-                <li><Link to="/admin/products">Admin Panel</Link></li>
-              )}
               {user ? (
-                <li>
-                  <button onClick={() => signOut(auth)}>Logout</button>
-                </li>
+                <>
+                  {isAdmin && (
+                    <li><Link to="/admin">Admin Dashboard</Link></li>
+                  )}
+                  <li>
+                    <button onClick={() => signOut(auth)}>Logout</button>
+                  </li>
+                </>
               ) : (
                 <>
                   <li><Link to="/login">Login</Link></li>
@@ -357,6 +361,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <AdminProducts />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/admin" 
+                element={
+                  <ProtectedRoute>
+                    <Admin />
                   </ProtectedRoute>
                 } 
               />

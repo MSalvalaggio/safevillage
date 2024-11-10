@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { getFirestore, collection, addDoc } from 'firebase/firestore';
 import { auth } from '../firebase';
 import '../styles/AdminProducts.css';
@@ -23,19 +23,6 @@ function AdminProducts() {
     thumbnailUrl: '',
     galleryUrls: ['']
   });
-  const [isAdmin, setIsAdmin] = useState(false);
-
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      setIsAdmin(user?.uid === process.env.REACT_APP_ADMIN_UID);
-    });
-
-    return () => unsubscribe();
-  }, []);
-
-  if (!isAdmin) {
-    return <div>Access Denied</div>;
-  }
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -84,7 +71,8 @@ function AdminProducts() {
     setLoading(true);
 
     try {
-      if (!auth.currentUser || auth.currentUser.uid !== process.env.REACT_APP_ADMIN_UID) {
+      const ADMIN_UID = '1ph4IGD1DTY4rXUct7kBrnYAWdD3';
+      if (!auth.currentUser || auth.currentUser.uid !== ADMIN_UID) {
         throw new Error("Unauthorized access");
       }
 

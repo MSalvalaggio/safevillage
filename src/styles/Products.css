@@ -16,28 +16,23 @@
   gap: 2rem;
 }
 
-:root {
-  --product-primary: #B27148;
-  --product-secondary: #54433A;
-  --product-background: #FBF7F4;
-  --product-text: #2C1810;
-  --product-accent: #8B4513;
-  --product-hover: #C98860;
-}
+/* Remove custom product color variables */
+/* Replace :root {...} block with site colors */
 
 .product-card {
-  background: var(--product-background);
+  background: var(--card-bg);
   border-radius: 12px;
   overflow: hidden;
   text-decoration: none;
-  color: var(--product-text);
+  color: var(--text-primary);
   transition: transform 0.3s ease;
-  border: 1px solid var(--product-primary);
+  border: 1px solid var(--accent);
 }
 
 .product-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 5px 15px rgba(178, 113, 72, 0.2);
+  border-color: var(--accent-hover);
 }
 
 .product-image-container {
@@ -66,7 +61,7 @@
   align-items: center;
   gap: 0.5rem;
   backdrop-filter: blur(4px);
-  border: 1px solid var(--product-primary);
+  border: 1px solid var(--accent);
   z-index: 10;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -79,12 +74,12 @@
 }
 
 .likes-badge .filled {
-  color: var(--product-primary);
+  color: var(--accent);
 }
 
 .product-info {
   padding: 1rem;
-  background: linear-gradient(to top, var(--product-background) 95%, transparent);
+  background: linear-gradient(to top, var(--card-bg) 95%, transparent);
   margin-top: -80px;  /* Overlap with image */
   position: relative;
   z-index: 2;
@@ -93,11 +88,11 @@
 .product-info h2 {
   margin: 0 0 0.5rem;
   font-size: 1.4rem;
-  color: var(--product-text);
+  color: var(--text-primary);
 }
 
 .product-price {
-  color: var(--product-primary);
+  color: var(--accent);
   font-size: 1.2rem;
   font-weight: bold;
   margin-bottom: 0.5rem;
@@ -120,16 +115,16 @@
   background: rgba(178, 113, 72, 0.1);
   padding: 0.3rem 0.8rem;
   border-radius: 4px;
-  color: var(--product-secondary);
+  color: var(--text-secondary);
 }
 
 .products-list {
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 0 1rem;
 }
 
 .product-list-item {
@@ -137,13 +132,13 @@
   display: grid;
   grid-template-columns: 400px 1fr;
   gap: 2rem;
-  background: var(--product-background);
+  background: var(--card-bg);
   border-radius: 12px;
   overflow: hidden;
   text-decoration: none;
   color: var(--text-primary);
   transition: all 0.3s ease;
-  border: 1px solid var(--product-primary);
+  border: 1px solid var(--accent);
   padding: 1.5rem;
   min-height: 300px;
 }
@@ -151,26 +146,11 @@
 .product-list-item:hover {
   transform: translateY(-5px);
   box-shadow: 0 10px 20px rgba(178, 113, 72, 0.2);
+  border-color: var(--accent-hover);
 }
 
 .product-list-item:hover .product-image-container img {
   transform: scale(1.05);
-}
-
-.product-image-container {
-  width: 100%;
-  height: 300px;
-  border-radius: 8px;
-  overflow: hidden;
-  position: relative;
-  border: 1px solid rgba(178, 113, 72, 0.2);
-}
-
-.product-image-container img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s ease;
 }
 
 .product-info {
@@ -187,14 +167,14 @@
 .product-info h2 {
   font-size: 1.8rem;
   margin: 0;
-  color: var(--product-text);
+  color: var(--text-primary);
   text-align: left;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .product-price {
   font-size: 1.4rem;
-  color: var(--product-primary);
+  color: var(--accent);
   font-weight: bold;
   text-align: left;
   margin-bottom: 0.8rem;
@@ -204,7 +184,7 @@
 .product-description {
   font-size: 1rem;
   line-height: 1.6;
-  color: var(--product-secondary);
+  color: var(--text-secondary);
   text-align: left;
   margin: 0;
   display: -webkit-box;
@@ -228,13 +208,18 @@
   border-radius: 20px;
   font-size: 0.9rem;
   backdrop-filter: blur(4px);
-  color: var(--product-secondary);
+  color: var(--text-secondary);
 }
 
 .product-content {
-  display: contents;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  gap: 1.5rem; /* Equal spacing between all elements */
+  flex: 1;
+  height: 100%;
+  border-left: 1px solid var(--accent); /* Add border between image and content */
   grid-template-columns: 400px 1fr;
-  gap: 2rem;
   text-decoration: none;
   color: var(--text-primary);
 }
@@ -250,7 +235,7 @@
   align-items: center;
   gap: 0.5rem;
   backdrop-filter: blur(4px);
-  border: 1px solid var(--product-primary);
+  border: 1px solid var(--accent);
   z-index: 10;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -263,175 +248,164 @@
 }
 
 .likes-badge .filled {
-  color: var(--product-primary);
+  color: var(--accent);
 }
 
-.products-list {
-  max-width: 1200px;
-  margin: 2rem auto;
-  padding: 0 1rem;
-}
-
+/* Simplify .product-item */
 .product-item {
   display: flex;
-  margin-bottom: 2rem;
-  border: 1px solid #eee;
+  flex-direction: row;
+  height: 200px; /* Fixed height for all list items */
+  width: 100%;
+  border: 1px solid var(--accent);
   border-radius: 12px;
+  overflow: hidden;
+  background-color: var(--card-bg);
+  transition: transform 0.3s ease;
   text-decoration: none;
-  color: inherit;
-  transition: all 0.3s ease;
-  background: #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  min-height: 600px;
-  padding: 0; /* Rimosso il padding */
-  overflow: hidden; /* Aggiunto per mantenere i bordi arrotondati */
 }
 
+.product-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(178, 113, 72, 0.2);
+  border-color: var(--accent-hover);
+}
+
+/* Simplify .product-image */
 .product-image {
-  flex: 0 0 50%; /* Cambiato per occupare il 50% della larghezza */
-  margin-right: 0; /* Rimosso il margin */
-  border: none; /* Rimosso il bordo */
-  border-radius: 0; /* Rimosso il border-radius */
+  width: 25%; /* Change to 1/4 of the card width */
+  min-width: 25%; /* Ensure image maintains 1/4 width */
+  height: 100%;
   overflow: hidden;
-  position: relative; /* Aggiunto per il posizionamento dell'immagine */
-  padding-top: 50%; /* Creates a square aspect ratio container */
+  background-color: var(--darker-bg);
 }
 
 .product-image img {
   width: 100%;
   height: 100%;
-  object-fit: contain; /* Changed from cover to contain */
-  position: absolute;
-  left: 0;
-  top: 0;
-  background: #f5f5f5; /* Light background for images */
+  object-fit: cover;
 }
 
-.product-card .product-image-container {
-  height: 0;
-  padding-top: 100%; /* Square aspect ratio */
-  position: relative;
-}
-
-.product-card .product-image-container img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: contain; /* Changed from cover to contain */
-  background: #f5f5f5;
-}
-
+/* Simplify .product-content */
 .product-content {
-  flex: 1;
-  text-align: left;
+  flex: 1; /* Takes remaining space (75%) */
+  padding: 1.5rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 1.5rem;
-  padding: 3rem; /* Aggiunto padding al contenuto */
+  gap: 0.8rem;
+  text-decoration: none;
+  align-items: flex-start;
+  text-align: left;
 }
 
 .product-content h3 {
-  font-size: 2rem; /* Aumentato da 1.5rem */
+  font-size: 1.2rem;
   margin: 0;
-  color: #2a2a2a;
+  /* Limit title to 2 lines */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  color: var(--text-primary);
+  text-decoration: none;
+  width: 100%;
+  text-align: left;
+}
+
+.product-title {
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--accent);
+  font-size: 1.4rem;
   font-weight: bold;
-  line-height: 1.2;
+  color: var(--text-primary);
+  margin: 0;
+  width: 100%;
 }
 
 .product-description {
-  font-size: 1.2rem; /* Aumentato da 1rem */
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--accent);
+  font-size: 1rem;
+  line-height: 1.4;
+  color: var(--text-secondary);
   margin: 0;
-  line-height: 1.6;
-  color: #4a4a4a;
+  width: 100%;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .product-price {
-  font-size: 1.8rem; /* Aumentato da 1.25rem */
+  margin-top: auto;
+  font-size: 1.1rem;
   font-weight: bold;
-  color: #1a1a1a;
+  color: var(--accent);
   margin: 0;
+  text-decoration: none;
+  width: 100%;
+  text-align: left;
 }
 
+/* Remove unused or redundant media queries */
+
+/* Clean up media queries */
 @media (max-width: 768px) {
-  .products-page {
-    padding: 80px 1rem 1rem;
-  }
-
-  .products-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .product-list-item {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-  
-  .product-image-container {
-    height: 250px;
-  }
-  
-  .product-info {
-    padding: 1rem 0;
-    gap: 0.8rem;
-  }
-
-  .product-info h2 {
-    font-size: 1.5rem;
-  }
-
-  .product-content {
-    grid-template-columns: 1fr;
-  }
-
   .product-item {
     flex-direction: column;
-    min-height: auto;
+    height: auto;
   }
-
+  
   .product-image {
-    flex: none;
-    height: 400px;
-    position: relative;
-    padding-top: 100%; /* Maintains square aspect ratio on mobile */
+    width: 100%;
+    height: 200px;
+    min-width: unset;
   }
+}
 
-  .product-image img {
-    position: relative;
-    object-fit: contain; /* Ensures entire image is visible */
-  }
+.product-details {
+  display: flex;
+  justify-content: space-between; /* Equal spacing between details */
+  padding-top: 0.5rem;
+  padding-bottom: 1.5rem; /* Add bottom padding */
+  margin-bottom: 1rem; /* Add bottom margin */
+  width: 100%;
+  border-bottom: 1px solid var(--accent); /* Optional: add border for visual separation */
+}
 
-  .product-content {
-    padding: 2rem;
-  }
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: var(--darker-bg);
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+}
 
-  .product-item {
-    flex-direction: column;
-    padding: 1.5rem;
-  }
+.detail-icon {
+  color: var(--accent);
+  font-size: 1.1rem;
+}
 
-  .product-image {
-    flex: none;
-    margin-right: 0;
-    margin-bottom: 1.5rem;
-    height: 400px; /* Aumentato anche per mobile */
-  }
+.product-details {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  width: 100%;
+}
 
-  .product-image img {
-    height: 400px; /* Aumentato anche per mobile */
-  }
+.product-details span {
+  padding: 0.3rem 0.8rem;
+  background-color: var(--darker-bg);
+  border-radius: 4px;
+  border: 1px solid var(--accent);
+}
 
-  .product-content h3 {
-    font-size: 1.5rem;
-  }
-
-  .product-description {
-    font-size: 1.1rem;
-  }
-
-  .product-price {
-    font-size: 1.5rem;
-  }
+.product-material {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
 }

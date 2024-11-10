@@ -338,6 +338,13 @@ h3 { font-size: clamp(1.5rem, 3vw, 2rem); }
   margin-bottom: 1.5rem;
 }
 
+.product-card img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
 .youtube-section {
   background-color: var(--card-bg);
   padding: 4rem 2rem;
@@ -656,6 +663,12 @@ section::before {
 .indicator.active {
   opacity: 1;
   background: var(--accent);
+}
+
+.carousel-slide {
+  aspect-ratio: 1 / 1;
+  max-width: 500px;
+  margin: 0 auto;
 }
 
 /* Footer styles */
