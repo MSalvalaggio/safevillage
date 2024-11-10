@@ -3,13 +3,13 @@ import { getStorage } from 'firebase/storage';
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyA-yWrlY3vR1wHzmR3qNwRoJEyEtXmdx-k",
-  authDomain: "safevillage-studio.firebaseapp.com",
-  projectId: "safevillage-studio",
-  storageBucket: "safevillage-studio.appspot.com",
-  messagingSenderId: "415047605923",
-  appId: "1:415047605923:web:c8a2060053db164b9c2916",
-  measurementId: "G-3BZ2GJ3BQM"
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
 };
 
 // Initialize Firebase

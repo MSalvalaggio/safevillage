@@ -19,15 +19,15 @@ function AdminProducts() {
       construction: '',
       warranty: ''
     },
-    care: ''
+    care: '',
+    thumbnailUrl: '',
+    galleryUrls: ['']
   });
-  const [gallery, setGallery] = useState([]);
-  const [thumbnail, setThumbnail] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
-      setIsAdmin(user?.uid === "1ph4IGD1DTY4rXUct7kBrnYAWdD3");
+      setIsAdmin(user?.uid === process.env.REACT_APP_ADMIN_UID);
     });
 
     return () => unsubscribe();
@@ -56,22 +56,27 @@ function AdminProducts() {
     }
   };
 
-  const handleGalleryChange = (e) => {
-    setGallery(Array.from(e.target.files));
+  const addGalleryUrlInput = () => {
+    setProductData(prev => ({
+      ...prev,
+      galleryUrls: [...prev.galleryUrls, '']
+    }));
   };
 
-  const handleThumbnailChange = (e) => {
-    setThumbnail(e.target.files[0]);
+  const updateGalleryUrl = (index, url) => {
+    const newGalleryUrls = [...productData.galleryUrls];
+    newGalleryUrls[index] = url;
+    setProductData(prev => ({
+      ...prev,
+      galleryUrls: newGalleryUrls
+    }));
   };
 
-  // Update the getGoogleDriveDirectLink function
-  const getGoogleDriveDirectLink = (shareLink) => {
-    // Extract file ID from sharing link - matches both folder and direct file links
-    const fileId = shareLink.match(/[-\w]{25,}/);
-    if (fileId) {
-      return `https://drive.google.com/uc?export=view&id=${fileId[0]}`;
-    }
-    return shareLink;
+  const removeGalleryUrl = (index) => {
+    setProductData(prev => ({
+      ...prev,
+      galleryUrls: prev.galleryUrls.filter((_, i) => i !== index)
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -79,54 +84,18 @@ function AdminProducts() {
     setLoading(true);
 
     try {
-      // Check if user is authenticated and is admin
-      if (!auth.currentUser || auth.currentUser.uid !== "1ph4IGD1DTY4rXUct7kBrnYAWdD3") {
+      if (!auth.currentUser || auth.currentUser.uid !== process.env.REACT_APP_ADMIN_UID) {
         throw new Error("Unauthorized access");
       }
 
       const db = getFirestore();
 
-      // Modified instructions to use the provided Google Drive folder
-      const uploadInstructions = `
-Please use images from the following Google Drive folder:
-https://drive.google.com/drive/folders/19AcXDgPJqqB_UU6ccRroNeMA5Vujo8FP?usp=sharing
-
-Instructions:
-1. Open the Google Drive folder
-2. Right-click on the desired image
-3. Select "Get link" and ensure "Anyone with the link" is selected
-4. Click "Copy link"
-5. Paste the link here when prompted`;
-
-      alert(uploadInstructions);
-
-      // Continue with existing image handling code...
-      const thumbnailLink = prompt('Paste Google Drive sharing link for thumbnail:', '');
-      const galleryLinks = [];
-      for (let i = 0; i < gallery.length; i++) {
-        const link = prompt(`Paste Google Drive sharing link for gallery image ${i + 1}:`, '');
-        if (link) galleryLinks.push(link);
-      }
-
-      // Convert sharing links to direct links
-      const directThumbnailLink = getGoogleDriveDirectLink(thumbnailLink);
-      const directGalleryLinks = galleryLinks.map(getGoogleDriveDirectLink);
-
-      // Create product document with direct links
-      const productToAdd = {
-        ...productData,
-        thumbnailUrl: directThumbnailLink,
-        galleryUrls: directGalleryLinks
-      };
-
-      // Add to Firestore with explicit admin UID
       await addDoc(collection(db, 'products'), {
-        ...productToAdd,
+        ...productData,
         createdBy: auth.currentUser.uid,
         createdAt: new Date().toISOString()
       });
 
-      // Clear form
       setProductData({
         name: '',
         price: '',
@@ -141,10 +110,10 @@ Instructions:
           construction: '',
           warranty: ''
         },
-        care: ''
+        care: '',
+        thumbnailUrl: '',
+        galleryUrls: ['']
       });
-      setGallery([]);
-      setThumbnail(null);
 
       alert('Product added successfully!');
     } catch (error) {
@@ -227,24 +196,48 @@ Instructions:
         </div>
 
         <div className="form-group">
-          <label>Thumbnail:</label>
+          <label>Thumbnail URL (Google Drive):</label>
           <input
-            type="file"
-            accept="image/*"
-            onChange={handleThumbnailChange}
+            type="text"
+            value={productData.thumbnailUrl}
+            onChange={(e) => setProductData(prev => ({
+              ...prev,
+              thumbnailUrl: e.target.value
+            }))}
+            placeholder="Paste Google Drive sharing link"
             required
           />
         </div>
 
         <div className="form-group">
-          <label>Gallery Images:</label>
-          <input
-            type="file"
-            accept="image/*"
-            multiple
-            onChange={handleGalleryChange}
-            required
-          />
+          <label>Gallery URLs (Google Drive):</label>
+          {productData.galleryUrls.map((url, index) => (
+            <div key={index} className="gallery-url-input">
+              <input
+                type="text"
+                value={url}
+                onChange={(e) => updateGalleryUrl(index, e.target.value)}
+                placeholder="Paste Google Drive sharing link"
+                required
+              />
+              {index > 0 && (
+                <button 
+                  type="button" 
+                  onClick={() => removeGalleryUrl(index)}
+                  className="remove-url-btn"
+                >
+                  Remove
+                </button>
+              )}
+            </div>
+          ))}
+          <button 
+            type="button" 
+            onClick={addGalleryUrlInput}
+            className="add-url-btn"
+          >
+            Add Another Image URL
+          </button>
         </div>
 
         <button type="submit" disabled={loading}>

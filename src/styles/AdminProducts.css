@@ -46,3 +46,37 @@ button[type="submit"]:disabled {
   background-color: #cccccc;
   cursor: not-allowed;
 }
+
+.gallery-url-input {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.gallery-url-input input {
+  flex: 1;
+}
+
+.remove-url-btn {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.add-url-btn {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 1rem;
+}
+
+.add-url-btn:hover,
+.remove-url-btn:hover {
+  opacity: 0.9;
+}
