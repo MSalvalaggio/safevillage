@@ -102,8 +102,6 @@ function Products() {
           galleryUrls: (data.galleryUrls || []).map(url => convertGoogleDriveUrl(url))
         };
       });
-      
-      // Set the first product as main product
       if (products.length > 0) {
         setProduct({
           ...products[0],
@@ -118,12 +116,9 @@ function Products() {
             warranty: products[0].specifications.warranty || ''
           }
         });
-        
-        // Set remaining products as related
         setRelatedProducts(products.slice(1));
       }
     };
-
     fetchProducts();
   }, []);
 

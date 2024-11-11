@@ -71,7 +71,7 @@ function AdminProducts() {
     setLoading(true);
 
     try {
-      const ADMIN_UID = '1ph4IGD1DTY4rXUct7kBrnYAWdD3';
+      const ADMIN_UID = process.env.REACT_APP_ADMIN_UID;
       if (!auth.currentUser || auth.currentUser.uid !== ADMIN_UID) {
         throw new Error("Unauthorized access");
       }

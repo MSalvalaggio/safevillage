@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { HashRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Link, Navigate, useNavigate } from 'react-router-dom';
 import { auth } from './firebase';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import Login from './components/Login';
@@ -12,94 +12,78 @@ import ProductDetail from './components/ProductDetail';
 import AdminProducts from './components/AdminProducts';
 import { ProductProvider, useProducts } from './context/ProductContext';
 import Admin from './components/Admin';
+// Remove these imports
+// import { collection, addDoc } from 'firebase/firestore';
+// import { db } from './firebase';
 // Add more product images imports here
 
 const CHANNEL_ID = 'UCHPszxtOERYU6gzWmBHytJQ';
-const ADMIN_UID = '1ph4IGD1DTY4rXUct7kBrnYAWdD3';
+const ADMIN_UID = process.env.REACT_APP_ADMIN_UID;
 
-function CarouselSection() {
-  const { products, loading, error } = useProducts();
-  const [currentSlide, setCurrentSlide] = useState(0);
-
-  const convertGoogleDriveUrl = (url) => {
-    if (!url) return '/placeholder.png';
-    try {
-      if (url.includes('drive.google.com')) {
-        let fileId = '';
-        if (url.includes('/file/d/')) {
-          fileId = url.split('/file/d/')[1].split('/')[0];
-        } else if (url.includes('id=')) {
-          fileId = url.split('id=')[1].split('&')[0];
-        } else {
-          fileId = url.match(/[-\w]{25,}/)?.[0];
-        }
-        return fileId ? `https://drive.google.com/thumbnail?id=${fileId}&sz=w500` : '/placeholder.png';
+function convertGoogleDriveUrl(url) {
+  if (!url) return '/placeholder.png';
+  try {
+    if (url.includes('drive.google.com')) {
+      let fileId = '';
+      if (url.includes('/file/d/')) {
+        fileId = url.split('/file/d/')[1].split('/')[0];
+      } else if (url.includes('id=')) {
+        fileId = url.split('id=')[1].split('&')[0];
+      } else {
+        fileId = url.match(/[-\w]{25,}/)?.[0];
       }
-      return url;
-    } catch (error) {
-      console.error('Error converting URL:', error);
-      return '/placeholder.png';
+      return fileId ? `https://drive.google.com/thumbnail?id=${fileId}&sz=w500` : '/placeholder.png';
     }
-  };
-
-  if (loading) {
-    return <div className="loading">Loading products...</div>;
+    return url;
+  } catch (error) {
+    console.error('Error converting URL:', error);
+    return '/placeholder.png';
   }
+}
 
-  if (error) {
-    return <div className="error">{error}</div>;
-  }
+function FeaturedProducts() {
+  const { products, loading, error } = useProducts();
+  const navigate = useNavigate(); // Add this hook
 
-  if (!products?.length) {
-    return <div className="no-products">No products available</div>;
-  }
+  if (loading) return <div className="loading">Loading products...</div>;
+  if (error) return <div className="error">{error}</div>;
+  if (!products?.length) return <div className="no-products">No products available</div>;
+
+  // Take only first 4 products
+  const featuredProducts = products.slice(0, 4);
 
   return (
-    <section className="products" id="products">
-      <h2>Our Handcrafted Collection</h2>
-      <div className="carousel-container">
-        <button className="carousel-button prev" onClick={() => setCurrentSlide((prev) => (prev === 0 ? products.length - 1 : prev - 1))} aria-label="Previous product">
-          ←
-        </button>
-        
-        <div className="carousel-content">
-          {products.map((product, index) => (
-            <div 
-              key={product.id}
-              className={`carousel-slide ${index === currentSlide ? 'active' : ''}`}
-              style={{ transform: `translateX(${100 * (index - currentSlide)}%)` }}
-            >
-              <div className="product-card">
-                <img 
-                  src={convertGoogleDriveUrl(product.thumbnailUrl)} 
-                  alt={product.name}
-                  loading="lazy"
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = '/placeholder.png';
-                  }}
-                />
-                <h3>{product.name}</h3>
-                <p>{product.description}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <button className="carousel-button next" onClick={() => setCurrentSlide((prev) => (prev + 1) % products.length)} aria-label="Next product">
-          →
-        </button>
-
-        <div className="carousel-indicators">
-          {products.map((_, index) => (
-            <button
-              key={index}
-              className={`indicator ${index === currentSlide ? 'active' : ''}`}
-              onClick={() => setCurrentSlide(index)}
-              aria-label={`Go to slide ${index + 1}`}
+    <section className="featured-products" id="products">
+      <h2>Featured Products</h2>
+      <div className="featured-grid">
+        {featuredProducts.map((product) => (
+          <div
+            key={product.id}
+            onClick={() => navigate(`/products/${product.id}`)}
+            className="featured-product-card"
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                navigate(`/products/${product.id}`);
+              }
+            }}
+          >
+            <img 
+              src={convertGoogleDriveUrl(product.thumbnailUrl)} 
+              alt={product.name}
+              loading="lazy"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = '/placeholder.png';
+              }}
             />
-          ))}
-        </div>
+            <div className="featured-product-info">
+              <h3>{product.name}</h3>
+              <p>{product.description}</p>
+            </div>
+          </div>
+        ))}
       </div>
     </section>
   );
@@ -229,7 +213,7 @@ function App() {
             <ul className="nav-links">
               <li><Link to="/" onClick={() => scrollToSection('home')}>Home</Link></li>
               <li><Link to="/" onClick={() => scrollToSection('about')}>About</Link></li>
-              <li><Link to="/products">Products</Link></li>
+              <li><Link to="/" onClick={() => scrollToSection('products')}>Featured Products</Link></li>
               <li><Link to="/" onClick={() => scrollToSection('youtube')}>Videos</Link></li>
               <li><Link to="/" onClick={() => scrollToSection('contact')}>Contact</Link></li>
               {user ? (
@@ -294,7 +278,7 @@ function App() {
                     </div>
                   </section>
 
-                  <CarouselSection />
+                  <FeaturedProducts />
 
                   {showYoutube && (
                     <section className="youtube-section" id="youtube">
@@ -333,25 +317,6 @@ function App() {
                       </div>
                     </section>
                   )}
-
-                  <section className="contact" id="contact">
-                    <h2>Contact Our Milan Studio</h2>
-                    <form id="contactForm" className="contact-form">
-                      <div className="form-group">
-                        <label htmlFor="name">Name:</label>
-                        <input type="text" id="name" name="name" required />
-                      </div>
-                      <div className="form-group">
-                        <label htmlFor="email">Email:</label>
-                        <input type="email" id="email" name="email" required />
-                      </div>
-                      <div className="form-group">
-                        <label htmlFor="message">Message:</label>
-                        <textarea id="message" name="message" required></textarea>
-                      </div>
-                      <button type="submit">Send Message</button>
-                    </form>
-                  </section>
                 </>
               } />
               <Route path="/products" element={<Products />} />
