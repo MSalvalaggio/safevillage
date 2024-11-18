@@ -1,20 +1,17 @@
 {
   "files": {
-    "main.css": "/safevillage/static/css/main.108d0984.css",
-    "main.js": "/safevillage/static/js/main.55ac8004.js",
+    "main.css": "/safevillage/static/css/main.1acfce85.css",
+    "main.js": "/safevillage/static/js/main.e4ca2e4d.js",
     "static/js/453.039c0d69.chunk.js": "/safevillage/static/js/453.039c0d69.chunk.js",
-    "static/media/image1.png": "/safevillage/static/media/image1.892e3236d33d35adc8be.png",
-    "static/media/handcrafted-oak-dining-table-milan.png": "/safevillage/static/media/handcrafted-oak-dining-table-milan.9ebb1ccae200b79dfff6.png",
-    "static/media/image2.png": "/safevillage/static/media/image2.227ff93a0fb06edd1b82.png",
     "static/media/artisan-woodworker-milan-workshop.png": "/safevillage/static/media/artisan-woodworker-milan-workshop.cfdfd43b5aa1fd861cc6.png",
     "static/media/logo.jpg": "/safevillage/static/media/logo.46c70521adad2d414c9a.jpg",
     "index.html": "/safevillage/index.html",
-    "main.108d0984.css.map": "/safevillage/static/css/main.108d0984.css.map",
-    "main.55ac8004.js.map": "/safevillage/static/js/main.55ac8004.js.map",
+    "main.1acfce85.css.map": "/safevillage/static/css/main.1acfce85.css.map",
+    "main.e4ca2e4d.js.map": "/safevillage/static/js/main.e4ca2e4d.js.map",
     "453.039c0d69.chunk.js.map": "/safevillage/static/js/453.039c0d69.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.108d0984.css",
-    "static/js/main.55ac8004.js"
+    "static/css/main.1acfce85.css",
+    "static/js/main.e4ca2e4d.js"
   ]
 }
