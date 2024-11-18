@@ -90,27 +90,18 @@ function FeaturedProducts() {
 }
 
 function App() {
-  const [channelInfo, setChannelInfo] = useState(null);
   const [videos, setVideos] = useState([]);
-  const [showYoutube] = useState(true); // Added showYoutube state
+  const [showYoutube] = useState(true);
   const [user, setUser] = useState(null);
   const isAdmin = user?.uid === ADMIN_UID;
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-
-  // Remove products array since it's now in ProductContext
 
   useEffect(() => {
     const fetchYouTubeData = async () => {
       setIsLoading(true);
       setError(null);
       try {
-        // Debug environment variables
-        console.log('Environment variables:', {
-          YOUTUBE_API_KEY: process.env.REACT_APP_YOUTUBE_API_KEY,
-          NODE_ENV: process.env.NODE_ENV
-        });
-
         const apiKey = process.env.REACT_APP_YOUTUBE_API_KEY;
         
         if (!apiKey) {
@@ -119,27 +110,9 @@ function App() {
 
         const baseUrl = 'https://www.googleapis.com/youtube/v3';
         
-        // Fetch channel info
-        const channelUrl = `${baseUrl}/channels?part=snippet,statistics&id=${CHANNEL_ID}&key=${apiKey}`;
-        console.log('Fetching from URL:', channelUrl);
-        
-        const channelResponse = await fetch(channelUrl);
-        
-        if (!channelResponse.ok) {
-          const errorData = await channelResponse.json();
-          throw new Error(
-            `Channel HTTP error! status: ${channelResponse.status}, message: ${JSON.stringify(errorData)}`
-          );
-        }
-        
-        const channelData = await channelResponse.json();
-        if (channelData.items?.length > 0) {
-          setChannelInfo(channelData.items[0]);
-        }
-
-        // Fetch videos
+        // Removed videoDuration parameter and increased maxResults
         const videosResponse = await fetch(
-          `${baseUrl}/search?part=snippet&channelId=${CHANNEL_ID}&maxResults=1&order=date&type=video&key=${apiKey}`
+          `${baseUrl}/search?part=snippet&channelId=${CHANNEL_ID}&maxResults=10&order=date&type=video&key=${apiKey}`
         );
         
         if (!videosResponse.ok) {
@@ -150,26 +123,26 @@ function App() {
         }
         
         const videosData = await videosResponse.json();
+        // Filter out shorts (videos with duration < 60 seconds) if needed
         if (videosData.items?.length > 0) {
-          setVideos(videosData.items);
+          // Take first 4 videos
+          setVideos(videosData.items.slice(0, 4));
         }
       } catch (error) {
         console.error('Error fetching YouTube data:', error.message);
         setError(error.message);
-        setChannelInfo(null);
         setVideos([]);
       } finally {
         setIsLoading(false);
       }
     };
 
-    // Only fetch if we have both required values
     if (CHANNEL_ID && process.env.REACT_APP_YOUTUBE_API_KEY) {
       fetchYouTubeData();
     } else {
       setError('Missing required configuration (CHANNEL_ID or API key)');
     }
-  }, [CHANNEL_ID]); // Remove YOUTUBE_API_KEY from dependencies since we're using process.env directly
+  }, []);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -258,10 +231,7 @@ function App() {
                   <section className="about" id="about">
                     <div className="about-content">
                       <div className="about-text">
-                        <h2>About Our Milan Workshop</h2>
-                        <p>
-                          In the heart of Milan's artisan district, our workshop is where traditional Italian craftsmanship meets contemporary design. With over a decade of experience, we specialize in creating bespoke wooden furniture that tells a unique story.
-                        </p>
+                        <h2>Workshop</h2>
                         <p>
                           Each piece is meticulously handcrafted using select hardwoods and time-honored joinery techniques, ensuring both beauty and longevity. Our commitment to sustainable practices means we source local materials and minimize waste through careful planning.
                         </p>
@@ -288,30 +258,19 @@ function App() {
                           <p>Loading videos...</p>
                         ) : error ? (
                           <p>Error: {error}</p>
-                        ) : !channelInfo && !videos.length ? (
+                        ) : !videos.length ? (
                           <p>No videos available</p>
                         ) : (
                           <div className="youtube-layout">
-                            <div className="featured-video">
-                              <iframe
-                                src={`https://www.youtube.com/embed/${videos[0].id.videoId}`}
-                                title={videos[0].snippet.title}
-                                allowFullScreen
-                              />
-                            </div>
-                            <div className="channel-info">
-                              <p className="channel-description">{channelInfo.snippet.description}</p>
-                              <div className="channel-stats">
-                                <div className="stat">
-                                  <span className="stat-number">{Number(channelInfo.statistics.subscriberCount).toLocaleString()}</span>
-                                  <span className="stat-label">Iscritti</span>
-                                </div>
-                                <div className="stat">
-                                  <span className="stat-number">{Number(channelInfo.statistics.videoCount).toLocaleString()}</span>
-                                  <span className="stat-label">Video</span>
-                                </div>
+                            {videos.map((video) => (
+                              <div key={video.id.videoId} className="featured-video">
+                                <iframe
+                                  src={`https://www.youtube.com/embed/${video.id.videoId}`}
+                                  title={video.snippet.title}
+                                  allowFullScreen
+                                />
                               </div>
-                            </div>
+                            ))}
                           </div>
                         )}
                       </div>

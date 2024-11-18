@@ -2,9 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
-import diningTable from '../images/handcrafted-oak-dining-table-milan.png';
-import image1 from '../images/image1.png';
-import image2 from '../images/image2.png';
 
 // Helper function for Google Drive URLs
 const convertGoogleDriveUrl = (url) => {
@@ -25,27 +22,24 @@ const convertGoogleDriveUrl = (url) => {
 };
 
 // Temporary placeholder for images
-const PlaceholderImage = () => (
-  <div style={{ 
-    width: '100%', 
-    height: '300px', 
-    background: '#1e2229',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: '#F4D59E',
-    border: '1px solid #B27148',
-    borderRadius: '12px'
-  }}>
-    Image Placeholder
-  </div>
-);
 
 // Add new ZoomableImage component
 const ZoomableImage = ({ src, alt }) => {
   const [isZoomed, setIsZoomed] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const imageRef = useRef(null);
+
+  const handleImageLoad = () => {
+    setIsLoading(false);
+    setHasError(false);
+  };
+
+  const handleImageError = () => {
+    setIsLoading(false);
+    setHasError(true);
+  };
 
   const handleMouseMove = (e) => {
     if (!imageRef.current) return;
@@ -73,14 +67,27 @@ const ZoomableImage = ({ src, alt }) => {
       onMouseLeave={handleMouseLeave}
       ref={imageRef}
     >
-      <img 
-        src={src} 
-        alt={alt}
-        className="product-main-image"
-        style={isZoomed ? {
-          transformOrigin: `${mousePosition.x}% ${mousePosition.y}%`
-        } : undefined}
-      />
+      {isLoading && (
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+        </div>
+      )}
+      {hasError ? (
+        <div className="image-error">
+          <span>Impossibile caricare l'immagine</span>
+        </div>
+      ) : (
+        <img 
+          src={src} 
+          alt={alt}
+          className="product-main-image"
+          style={isZoomed ? {
+            transformOrigin: `${mousePosition.x}% ${mousePosition.y}%`
+          } : undefined}
+          onLoad={handleImageLoad}
+          onError={handleImageError}
+        />
+      )}
     </div>
   );
 };
@@ -127,15 +134,7 @@ function Products() {
     setCurrentImageIndex(index);
   };
 
-  const nextImage = () => {
-    setCurrentImageIndex((prev) => (prev + 1) % product.gallery.length);
-  };
 
-  const prevImage = () => {
-    setCurrentImageIndex((prev) => 
-      prev === 0 ? product.gallery.length - 1 : prev - 1
-    );
-  };
 
   if (!product) return <div>Loading...</div>;
 
