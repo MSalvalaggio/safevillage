@@ -129,13 +129,31 @@ h3 { font-size: clamp(1.5rem, 3vw, 2rem); }
 }
 
 .nav-logo {
-  height: 50px;
+  display: flex;
+  align-items: center;
+}
+
+.nav-logo a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
 }
 
 .logo-image {
-  height: 100%;
+  height: 50px; /* Increased from 40px since it's now standalone */
   width: auto;
+  object-fit: contain;
 }
+
+/* Remove or comment out the brand-name styles since we're not using it anymore */
+/* .brand-name {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  text-decoration: none;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+} */
 
 .nav-links {
   display: flex;

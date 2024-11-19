@@ -1,0 +1,33 @@
+:root {
+  --primary-color: #007bff;
+  --secondary-color: #6c757d;
+  --background-color: #f5f5f5;
+  --text-color: #333;
+  --white: #fff;
+  --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --border-radius: 8px;
+  --max-width: 1200px;
+  --brown-sugar: #B27148;
+  --rich-black: #0d1821;
+  --indigo-dye: #344966;
+  --powder-blue: #b4cded;
+  --baby-powder: #f0f4ef;
+  --reseda-green: #839073;
+  --dark-bg: var(--rich-black);
+  --darker-bg: #080f15;
+  --card-bg: var(--indigo-dye);
+  --text-primary: var(--baby-powder);
+  --text-secondary: var(--powder-blue);
+  --accent: var(--reseda-green);
+  --accent-hover: #95a384;
+  --section-padding: clamp(4rem, 8vw, 8rem);
+  --content-width: min(1200px, 90vw);
+  --golden-ratio: 1.618;
+  --font-heading: 'Cinzel', serif;
+  --font-subheading: 'Playfair Display', serif;
+  --font-body: 'Cormorant Garamond', serif;
+  --font-nav: 'Montserrat', sans-serif;
+  --overlay-gradient: linear-gradient(to bottom, rgba(13, 24, 33, 0.7), rgba(13, 24, 33, 0.95));
+  --blur-amount: 10px;
+  --transition-smooth: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}

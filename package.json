@@ -4,6 +4,8 @@
   "private": true,
   "homepage": "https://YOUR_GITHUB_USERNAME.github.io/safevillage",
   "dependencies": {
+    "@fontsource/bai-jamjuree": "^5.1.0",
+    "@fontsource/bungee-hairline": "^5.1.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
