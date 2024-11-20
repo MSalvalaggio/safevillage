@@ -1,0 +1,251 @@
+.products-page {
+  min-height: 100vh;
+  background: #000000;
+  padding-top: 80px;
+  position: relative;
+}
+
+/* Add fade from hero section */
+.products-page::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 30vh;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, #000000 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.products-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 1000;
+}
+
+.nav-logo img {
+  width: 100px;
+  height: auto;
+}
+
+.nav-menu {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+.nav-link {
+  font-family: var(--font-nav);
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+  color: #f5dea7;
+  transform: translateY(-2px);
+}
+
+.nav-button {
+  background-color: transparent;
+  border: 1px solid #f5dea7;
+  padding: 0.5rem 1.5rem;
+  border-radius: 4px;
+}
+
+.nav-button:hover {
+  background-color: #f5dea7;
+  color: #000000;
+}
+
+.products-main {
+  position: relative;
+  z-index: 2;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.products-header {
+  text-align: center;
+  margin-bottom: 4rem;
+  color: #ffffff;
+}
+
+.products-header h1 {
+  font-family: "Bai Jamjuree", sans-serif;
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  margin-bottom: 1rem;
+  color: #f5dea7;
+}
+
+.products-header p {
+  font-family: "Tinos", serif;
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.product-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+}
+
+.product-image {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+}
+
+.product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.product-card:hover .product-image img {
+  transform: scale(1.05);
+}
+
+.product-content {
+  padding: 1.5rem;
+}
+
+.product-content h2 {
+  font-family: "Bai Jamjuree", sans-serif;
+  color: #f5dea7;
+  margin-bottom: 0.5rem;
+}
+
+.product-content p {
+  font-family: "Tinos", serif;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.product-price {
+  font-family: "Bai Jamjuree", sans-serif;
+  color: #f5dea7;
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.product-btn {
+  background: #f5dea7;
+  color: #000000;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-family: var(--font-nav);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  width: 100%;
+}
+
+.product-btn:hover {
+  background: #e0c989;
+  transform: translateY(-2px);
+}
+
+/* Mobile Menu Styles */
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  z-index: 1001;
+}
+
+@media (max-width: 768px) {
+  .menu-toggle {
+    display: block;
+  }
+
+  .nav-menu {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.95);
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    transform: translateX(100%);
+    transition: transform 0.3s ease-in-out;
+    backdrop-filter: blur(10px);
+  }
+
+  .nav-menu.visible {
+    transform: translateX(0);
+  }
+
+  .nav-link {
+    font-size: 1.25rem;
+    padding: 1rem 0;
+  }
+
+  .nav-button {
+    margin-top: 1rem;
+  }
+
+  .products-main {
+    padding: 1rem;
+  }
+
+  .products-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Loading State */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+  color: #f5dea7;
+  font-family: "Bai Jamjuree", sans-serif;
+  font-size: 1.5rem;
+}
+
+/* Error State */
+.error {
+  text-align: center;
+  color: #ff6b6b;
+  font-family: "Bai Jamjuree", sans-serif;
+  padding: 2rem;
+}

@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { HashRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { auth } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import Login from './components/Login';
 import Signup from './components/Signup';
-import './styles/index.css';  // Make sure this path is correct
+import './styles/index.css';
 import Products from './components/Products';
 import ProductDetail from './components/ProductDetail';
 import AdminProducts from './components/AdminProducts';
@@ -12,6 +12,7 @@ import { ProductProvider } from './context/ProductContext';
 import Admin from './components/Admin';
 import { Layout } from './components/layout/Layout';
 import HomePage from './components/home/HomePage';
+// Remove ProjectsPage import
 import ProtectedRoute from './components/common/ProtectedRoute';
 
 function App() {
@@ -33,7 +34,7 @@ function App() {
 
   return (
     <ProductProvider>
-      <Router>
+      <Router basename="/safevillage"> {/* Add basename here */}
         <Layout>
           <Routes>
             {/* Public Routes */}
@@ -42,6 +43,7 @@ function App() {
             <Route path="/products/:id" element={<ProductDetail />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            {/* Remove projects route */}
             
             {/* Protected Admin Routes */}
             <Route 
@@ -60,6 +62,9 @@ function App() {
                 </ProtectedRoute>
               } 
             />
+
+            {/* Add catch-all route for 404s */}
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Layout>
       </Router>

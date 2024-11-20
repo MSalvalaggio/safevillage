@@ -1,19 +1,32 @@
 .home {
   min-height: 100vh;
-  background-color: var(--dark-bg);
+  background-color: transparent; /* Changed from var(--dark-bg) to transparent */
 }
 
+/* Fix hero section spacing */
 .hero {
   position: relative;
   height: 100vh;
-  background: linear-gradient(rgba(13, 24, 33, 0.4), rgba(13, 24, 33, 0.6)),
-              url('../../images/hero.png') no-repeat center center;
+  background: url('../../images/hero.png') no-repeat center center; /* Removed gradient overlay */
   background-size: cover;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: var(--section-padding);
+  padding: 0; /* Remove padding */
+  margin-top: 0; /* Ensure no top margin */
+}
+
+/* Add fade to black overlay */
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 30vh; /* Adjust this value to control the fade height */
+  background: linear-gradient(to top, #000000 0%, rgba(0, 0, 0, 0) 100%);
+  pointer-events: none;
 }
 
 .hero-nav {
@@ -26,6 +39,7 @@
   z-index: 1000;
   background: transparent;
   transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  top: 0; /* Ensure nav starts at the very top */
 }
 
 .hero-nav.scrolled {
@@ -51,7 +65,7 @@
   width: 120px;
   height: auto;
   position: fixed;
-  top: 2rem;
+  top: 1rem; /* Reduced from 2rem */
   left: 2rem; /* Same as hero-content left */
   transform-origin: left top;
   transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
@@ -74,8 +88,15 @@
   flex-direction: column;
   gap: 3rem; /* Increased gap between items */
   align-items: flex-end;
-  opacity: 1;
+  opacity: 1; /* Changed back from 0 to 1 */
   z-index: 1000;
+  background-color: transparent;
+  transition: opacity 0.3s ease; /* Add transition for opacity */
+}
+
+/* Remove the .nav-menu.visible opacity override since we want the menu always visible by default */
+.nav-menu.visible {
+  /* Remove opacity: 1 from here */
 }
 
 .nav-menu .nav-link {
@@ -209,7 +230,7 @@
   left: 0;
   width: 0;
   height: 2px;
-  background-color: var(--accent);
+  background-color: #f5dea7;
   transition: var(--transition-smooth);
 }
 
@@ -228,13 +249,14 @@
 
 .nav-button {
   background-color: transparent;
-  border: 1px solid var(--accent);
+  border: 1px solid #f5dea7;
   padding: 0.5rem 1.5rem;
   border-radius: var(--border-radius);
 }
 
 .nav-button:hover {
-  background-color: var(--accent);
+  background-color: #f5dea7;
+  color: #000000; /* Added to ensure text visibility on light background */
 }
 
 .nav-button::after {
@@ -260,15 +282,16 @@
   max-width: 600px;
   text-align: left;
   padding-left: 0; /* Remove any padding */
+  z-index: 1; /* Add this to ensure content stays above gradient */
 }
 
 .hero h1 {
-  font-family: "Bungee Hairline", cursive;
+  font-family: "Castoro Titling", Bold;
   font-size: clamp(4rem, 10vw, 7rem);
   font-weight: 400;
-  color: var(--text-primary);
+  color: #f5dea7; /* Changed from #333333 to match button color */
   margin-bottom: 1.5rem;
-  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+  text-shadow: none; /* Remove text shadow */
   line-height: 0.9;
   letter-spacing: 0.02em;
   display: flex;
@@ -282,15 +305,16 @@
   opacity: 0.9;
   margin-top: 0.5rem;
   letter-spacing: 0.04em;
+  color: #f5dea7; /* Changed from #333333 to match button color */
 }
 
 .hero-text {
-  font-family: "Bai Jamjuree", sans-serif;
+  font-family: "Tinos", serif;
   font-size: clamp(1.25rem, 2vw, 1.8rem);
   font-weight: 400;
   color: var(--text-secondary);
   margin-bottom: 2rem;
-  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
+  text-shadow: none; /* Remove text shadow */
   line-height: 1.4;
   max-width: 90%;
 }
@@ -346,7 +370,7 @@
 }
 
 .feature-card p {
-  font-family: "Bai Jamjuree", sans-serif;
+  font-family: "Tinos", serif;
   color: var(--text-secondary);
   font-weight: 400;
 }
@@ -371,7 +395,7 @@
 }
 
 .about-content p {
-  font-family: "Bai Jamjuree", sans-serif;
+  font-family: "Tinos", serif;
   font-weight: 400;
   color: var(--text-secondary);
   line-height: 1.6;
@@ -398,63 +422,221 @@
 }
 
 .stat-card p {
-  font-family: "Bai Jamjuree", sans-serif;
+  font-family: "Tinos", serif;
   font-weight: 400;
   color: var(--text-secondary);
 }
 
 .contact {
-  padding: var(--section-padding);
-  background: var(--overlay-gradient);
+  padding: 6rem 2rem;
+  background: #000000;
+  position: relative;
+}
+
+/* Remove the fade-in transition */
+.contact::before {
+  display: none;
 }
 
 .contact h2 {
   font-family: "Bai Jamjuree", sans-serif;
-  font-size: clamp(2rem, 4vw, 3rem);
-  color: var(--text-primary);
-  margin-bottom: 3rem;
+  font-size: 2.5rem;
+  color: #ffffff;
+  margin-bottom: 2rem;
   text-align: center;
   font-weight: 600;
 }
 
 .contact-content {
-  max-width: var(--content-width);
+  max-width: 800px; /* Reduced max-width for better readability */
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4rem;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+}
+
+.contact-info {
+  text-align: center;
+}
+
+.contact-info h3 {
+  font-family: "Bai Jamjuree", sans-serif;
+  color: #f5dea7;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.contact-info p,
+.contact-details p {
+  font-family: "Tinos", serif;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
+  margin-bottom: 0.5rem;
 }
 
 .contact-form {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  max-width: 500px;
+  margin: 0 auto;
+  width: 100%;
 }
 
 .contact-form input,
 .contact-form textarea {
   padding: 1rem;
-  border: none;
-  border-radius: var(--border-radius);
-  background: var(--card-bg);
-  color: var(--text-primary);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+  font-family: "Tinos", serif;
+  transition: all 0.3s ease;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+  outline: none;
+  border-color: #f5dea7;
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .contact-form textarea {
-  min-height: 150px;
+  min-height: 120px;
   resize: vertical;
 }
 
 .submit-btn {
-  background: var(--accent);
-  color: var(--text-primary);
+  background: #f5dea7;
+  color: #000000;
   padding: 1rem;
-  border-radius: var(--border-radius);
-  transition: var(--transition-smooth);
+  border: none;
+  border-radius: 4px;
+  font-family: var(--font-nav);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .submit-btn:hover {
-  background: var(--accent-hover);
+  background: #e0c989;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .contact {
+    padding: 4rem 1.5rem;
+  }
+  
+  .contact h2 {
+    font-size: 2rem;
+  }
+}
+
+/* ...existing code... */
+
+.footer {
+  background: #000000;
+  padding: 4rem 0 2rem;
+  color: #ffffff;
+}
+
+.footer-content {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 2rem;
+  gap: 2rem;
+}
+
+.footer-logo img {
+  width: 100px;
+  height: auto;
+  opacity: 0.9;
+  transition: opacity 0.3s ease;
+}
+
+.footer-logo img:hover {
+  opacity: 1;
+}
+
+.footer-links,
+.footer-social {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.footer-links h4,
+.footer-social h4 {
+  color: #f5dea7;
+  font-family: "Bai Jamjuree", sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.footer-link,
+.social-links a {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  font-family: "Tinos", serif;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+}
+
+.footer-link:hover,
+.social-links a:hover {
+  color: #f5dea7;
+  transform: translateX(5px);
+}
+
+.social-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.footer-bottom {
+  text-align: center;
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.footer-bottom p {
+  font-family: "Tinos", serif;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+@media (max-width: 768px) {
+  .footer-content {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 3rem;
+  }
+
+  .footer-links,
+  .footer-social {
+    align-items: center;
+  }
+
+  .footer-link:hover,
+  .social-links a:hover {
+    transform: translateY(-2px);
+  }
 }
 
 .footer {
@@ -515,7 +697,7 @@
 }
 
 .footer-bottom p {
-  font-family: "Bai Jamjuree", sans-serif;
+  font-family: "Tinos", serif;
   font-weight: 400;
   color: var(--text-secondary);
 }
@@ -616,17 +798,19 @@
         bottom: 0;
         width: 100%;
         height: 100vh;
-        background-color: var(--dark-bg);
+        background-color: rgba(0, 0, 0, 0); /* Fully transparent background */
         flex-direction: column;
         justify-content: center;
         padding: 2rem;
         transform: translateX(100%);
-        transition: transform 0.3s ease-in-out;
+        transition: transform 0.3s ease-in-out, background-color 0.3s ease;
         z-index: 999;
     }
 
     .nav-menu.visible {
+        background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent background when visible */
         transform: translateX(0);
+        backdrop-filter: blur(10px);
     }
 }
 
@@ -655,16 +839,18 @@
     bottom: 0;
     width: 100%;
     height: 100vh;
-    background-color: var(--dark-bg);
+    background-color: transparent;
     flex-direction: column;
     justify-content: center;
     padding: 2rem;
     transform: translateX(100%);
     transition: transform 0.3s ease-in-out;
     z-index: 999;
+    backdrop-filter: blur(10px); /* Optional: adds slight blur for better readability */
   }
 
   .nav-menu.visible {
+    background-color: transparent;
     transform: translateX(0);
   }
 
@@ -777,8 +963,291 @@
 
 .contact-info p,
 .contact-details p {
-  font-family: "Bai Jamjuree", sans-serif;
+  font-family: "Tinos", serif;
   font-weight: 400;
+  color: var (--text-secondary);
+  line-height: 1.6;
+}
+
+.project-build {
+  padding: var(--section-padding);
+  background-color: #000000;
+  position: relative;
+  z-index: 1;
+}
+
+.project-build h2 {
+  font-family: "Bai Jamjuree", sans-serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  color: var(--text-primary);
+  text-align: center;
+  margin-bottom: 4rem;
+  font-weight: 600;
+}
+
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+  max-width: var(--content-width);
+  margin: 0 auto;
+}
+
+.project-card {
+  text-align: center;
+  padding: 2rem;
+  background: var(--card-bg);
+  border-radius: var(--border-radius);
+  transition: var(--transition-smooth);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.project-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.project-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.card-image {
+  width: 100%;
+  height: auto;
+  margin-top: 1rem;
+  overflow: hidden;
+  border-radius: var(--border-radius);
+}
+
+.card-image img {
+  width: 100%;
+  height: auto;
+  transition: var(--transition-smooth);
+}
+
+.project-card:hover .card-image img {
+  transform: scale(1.05);
+}
+
+.project-card h3 {
+  font-family: "Bai Jamjuree", sans-serif;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.project-card p {
+  font-family: "Tinos", serif;
   color: var(--text-secondary);
   line-height: 1.6;
+}
+
+.project-build-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  max-width: var(--content-width);
+  margin: 0 auto 4rem;
+  align-items: center;
+}
+
+.project-build-image {
+  width: 100%;
+  height: auto;
+}
+
+.project-build-image img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--border-radius);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.project-build-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.project-build-text h2 {
+  text-align: left;
+  margin-bottom: 0;
+}
+
+.project-build-text p {
+  font-family: "Tinos", serif;
+  color: var(--text-secondary);
+  font-size: 1.2rem;
+  line-height: 1.6;
+}
+
+.project-build-btn {
+  background: #f5dea7;
+  color: #000000; /* Dark text for light background */
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: var(--border-radius);
+  font-family: var(--font-nav);
+  font-size: 1rem;
+  font-weight: 600; /* Made slightly bolder */
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  text-transform: uppercase; /* Makes the text all caps */
+  letter-spacing: 1px; /* Adds some spacing between letters */
+  width: fit-content;
+}
+
+.project-build-btn:hover {
+  background: #e0c989; /* Slightly darker shade for hover */
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .project-build-content {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding: 0 1rem;
+  }
+  
+  .project-build-text {
+    text-align: center;
+    align-items: center;
+  }
+  
+  .project-build-text h2 {
+    text-align: center;
+  }
+}
+
+@media (max-width: 1024px) {
+  .project-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 576px) {
+  .project-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.btn-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.video-section {
+  padding: var(--section-padding);
+  background: var(--overlay-gradient); /* Changed from white to match contact section */
+  position: relative;
+}
+
+/* Update fade in transition to match new background */
+.video-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: linear-gradient(to bottom, #000000 0%, rgba(13, 24, 33, 0.95) 100%); /* Adjusted to fade into the new background */
+  pointer-events: none;
+}
+
+.video-content {
+  position: relative; /* Ensure content stays above gradient */
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  max-width: var(--content-width);
+  margin: 0 auto;
+  align-items: center;
+}
+
+.video-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.video-text h2 {
+  font-family: "Bai Jamjuree", sans-serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  color: #333333; /* Changed from var(--text-primary) to dark grey */
+  font-weight: 600;
+}
+
+.video-text h2 {
+  color: white;
+}
+
+.channel-description {
+  font-family: "Tinos", serif;
+  color: var(--text-secondary); /* Changed to match the theme's secondary text color */
+  font-size: 1.2rem;
+  line-height: 1.6;
+}
+
+.youtube-btn {
+  background: #f5dea7;
+  color: #000000;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: var(--border-radius);
+  font-family: var(--font-nav);
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  width: fit-content;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.youtube-btn:hover {
+  background: #e0c989;
+  transform: translateY(-2px);
+}
+
+.video-player {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+  height: 0;
+  overflow: hidden;
+  border-radius: var(--border-radius);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.video-player iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--border-radius);
+}
+
+@media (max-width: 768px) {
+  .video-content {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .video-text {
+    text-align: center;
+    align-items: center;
+  }
+  
+  .video-text h2 {
+    text-align: center;
+  }
 }
