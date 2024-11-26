@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import '@fontsource/bungee-hairline';
 import '@fontsource/bai-jamjuree';
@@ -6,6 +6,9 @@ import '@fontsource/tinos';
 import './HomePage.css';
 import logo from '../../images/logo512.png';
 import { getLatestVideo, getChannelInfo } from '../../services/YouTubeService';
+import { collection, query, limit, getDocs } from 'firebase/firestore';
+import { db, storage } from '../../firebase/config'; // Add storage import
+import { ref, getDownloadURL } from 'firebase/storage';
 
 const HomePage = () => {
   const location = useLocation();
@@ -13,6 +16,50 @@ const HomePage = () => {
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [latestVideo, setLatestVideo] = useState(null);
   const [channelInfo, setChannelInfo] = useState(null);
+  const [featuredProducts, setFeaturedProducts] = useState([]);
+  const [loadingStates, setLoadingStates] = useState({});
+
+  // Updated Google Drive link conversion
+  const convertDriveLink = (url) => {
+    if (!url) return '';
+    try {
+      if (url.includes('drive.google.com')) {
+        // Extract file ID from Google Drive URL
+        const fileId = url.match(/[-\w]{25,}/);
+        if (fileId) {
+          // Use the direct image preview URL
+          return `https://drive.google.com/thumbnail?id=${fileId[0]}&sz=w1000-h1000`;
+        }
+      }
+      return url;
+    } catch (error) {
+      console.error('Error converting Drive link:', error);
+      return '';
+    }
+  };
+
+  // Memoize getImageUrl with useCallback
+  const getImageUrl = useCallback(async (url) => {
+    if (!url) return '';
+    
+    try {
+      if (url.includes('drive.google.com')) {
+        return convertDriveLink(url);
+      }
+      // Rest of the function remains the same
+      if (url.startsWith('gs://') || url.startsWith('/')) {
+        const storageRef = ref(storage, url);
+        return await getDownloadURL(storageRef);
+      }
+      if (url.startsWith('http')) {
+        return url;
+      }
+      return '';
+    } catch (error) {
+      console.error('Error getting image URL:', error, url);
+      return '';
+    }
+  }, []);
 
   useEffect(() => {
     // Handle scroll events
@@ -32,14 +79,18 @@ const HomePage = () => {
 
   useEffect(() => {
     const fetchYouTubeData = async () => {
-      const videoData = await getLatestVideo('YourChannelUsername'); // Replace with your YouTube username
-      const channelData = await getChannelInfo('YourChannelUsername'); // Replace with your YouTube username
-      
-      if (videoData) {
-        setLatestVideo(videoData);
-      }
-      if (channelData) {
-        setChannelInfo(channelData);
+      try {
+        const videoData = await getLatestVideo('YourChannelUsername'); // Replace with your YouTube username
+        const channelData = await getChannelInfo('YourChannelUsername'); // Replace with your YouTube username
+        
+        if (videoData) {
+          setLatestVideo(videoData);
+        }
+        if (channelData) {
+          setChannelInfo(channelData);
+        }
+      } catch (error) {
+        console.error('Error fetching YouTube data:', error);
       }
     };
 
@@ -55,6 +106,48 @@ const HomePage = () => {
       }
     }
   }, [location]);
+
+  useEffect(() => {
+    const fetchFeaturedProducts = async () => {
+      try {
+        const productsRef = collection(db, 'products');
+        const q = query(productsRef, limit(3));
+        const querySnapshot = await getDocs(q);
+
+        const products = await Promise.all(querySnapshot.docs.map(async (doc) => {
+          const data = doc.data();
+          const imageUrl = await getImageUrl(data.thumbnailUrl);
+          
+          return {
+            id: doc.id,
+            name: data.name || '',
+            description: data.description || '',
+            price: data.price || '-',
+            care: data.care || '',
+            details: data.details || '',
+            createdAt: data.createdAt || '',
+            createdBy: data.createdBy || '',
+            imageUrl: imageUrl || '',
+            specifications: data.specifications || {}
+          };
+        }));
+
+        setFeaturedProducts(products);
+        
+        // Initialize loading states for new products
+        const initialLoadingStates = {};
+        products.forEach(product => {
+          initialLoadingStates[product.id] = true;
+        });
+        setLoadingStates(initialLoadingStates);
+      } catch (error) {
+        console.error('Error fetching featured products:', error);
+        setFeaturedProducts([]);
+      }
+    };
+
+    fetchFeaturedProducts();
+  }, [getImageUrl]);
 
   // Smooth scroll to section
   const scrollToSection = (sectionId) => {
@@ -72,6 +165,34 @@ const HomePage = () => {
   const toggleMenu = () => {
     setIsMenuVisible(!isMenuVisible);
   };
+
+  // Simplify image loading handler
+  const handleImageLoad = useCallback((productId) => {
+    setLoadingStates(prev => ({
+      ...prev,
+      [productId]: false
+    }));
+  }, []);
+
+  // Update handleImageError with proper dependencies
+  const handleImageError = useCallback((productId) => {
+    setLoadingStates(prev => ({
+      ...prev,
+      [productId]: false
+    }));
+  }, []);
+
+  // Add image preloading effect
+  useEffect(() => {
+    featuredProducts.forEach(product => {
+      if (product.imageUrl) {
+        const img = new Image();
+        img.onload = () => handleImageLoad(product.id);
+        img.onerror = () => handleImageError(product.id);
+        img.src = product.imageUrl;
+      }
+    });
+  }, [featuredProducts, handleImageLoad, handleImageError]);
 
   return (
     <div className="home">
@@ -109,22 +230,42 @@ const HomePage = () => {
             SafeVillage
             <span className="studio">Studio</span>
           </h1>
-          <p className="hero-text">I'm making it</p>
         </div>
       </header>
       
       <main>
         <section className="project-build" id="project-build">
           <div className="project-build-content">
-            <div className="project-build-image">
-              <img src={require('../../images/main_project.png')} alt="Project Table" />
-            </div>
-            <div className="project-build-text">
-              <h2>Project Build</h2>
-              <p>Start building your project with our intuitive tools and workflows.</p>
+            <div className="project-build-left">
+              <h2>Featured Products</h2>
               <div className="btn-container">
                 <Link to="/products" className="project-build-btn">SEE THE COLLECTION</Link>
               </div>
+            </div>
+            <div className="featured-products-grid vertical-align">
+              {featuredProducts.map((product) => (
+                <Link 
+                  to={`/products/${product.id}`} 
+                  key={product.id} 
+                  className={`featured-product-card ${loadingStates[product.id] ? 'loading' : ''}`}
+                  style={{
+                    backgroundImage: product.imageUrl ? `url(${product.imageUrl})` : 'none',
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    height: '256px', // Changed from '320px' to '256px'
+                  }}
+                >
+                  {loadingStates[product.id] && (
+                    <div className="skeleton-loader"></div>
+                  )}
+                  {!product.imageUrl && (
+                    <div className="image-placeholder">No image available</div>
+                  )}
+                  <div className="featured-product-info">
+                    <h3>{product.name}</h3>
+                  </div>
+                </Link>
+              ))}
             </div>
           </div>
         </section>
@@ -195,13 +336,7 @@ const HomePage = () => {
             <div className="social-links">
               <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">Twitter</a>
               <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-            </div>
-          </div>
-        </div>
-        <div className="footer-bottom">
-          <p>&copy; {new Date().getFullYear()} SafeVillage. All rights reserved.</p>
-        </div>
-      </footer>
+            </div>          </div>        </div>        <div className="footer-bottom">          <p>&copy; {new Date().getFullYear()} SafeVillage. All rights reserved.</p>        </div>      </footer>
     </div>
   );
 };
