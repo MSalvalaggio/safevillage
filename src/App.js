@@ -7,66 +7,37 @@ import Signup from './components/Signup';
 import './styles/index.css';
 import Products from './components/Products';
 import ProductDetail from './components/ProductDetail';
-import AdminProducts from './components/AdminProducts';
 import { ProductProvider } from './context/ProductContext';
-import Admin from './components/Admin';
 import { Layout } from './components/layout/Layout';
 import HomePage from './components/home/HomePage';
-// Remove ProjectsPage import
-import ProtectedRoute from './components/common/ProtectedRoute';
+import { SpeedInsights } from "@vercel/speed-insights/react"
 
 function App() {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      setLoading(false); // Set loading to false once we have the auth state
+    const unsubscribe = onAuthStateChanged(auth, () => {
+      setLoading(false);
     });
-    return () => {
-      unsubscribe();
-    };
+    return () => unsubscribe();
   }, []);
 
-  // Don't render anything while checking auth
   if (loading) return null;
 
   return (
     <ProductProvider>
-      <Router basename="/safevillage"> {/* Add basename here */}
+      <Router basename="/safevillage">
         <Layout>
           <Routes>
-            {/* Public Routes */}
             <Route path="/" element={<HomePage />} />
             <Route path="/products" element={<Products />} />
             <Route path="/products/:id" element={<ProductDetail />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
-            {/* Remove projects route */}
-            
-            {/* Protected Admin Routes */}
-            <Route 
-              path="/admin" 
-              element={
-                <ProtectedRoute user={user} loading={loading}>
-                  <Admin />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/admin/products" 
-              element={
-                <ProtectedRoute user={user} loading={loading}>
-                  <AdminProducts />
-                </ProtectedRoute>
-              } 
-            />
-
-            {/* Add catch-all route for 404s */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Layout>
+        <SpeedInsights />
       </Router>
     </ProductProvider>
   );

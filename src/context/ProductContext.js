@@ -1,49 +1,25 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { getFirestore, collection, getDocs } from 'firebase/firestore';
 
-const ProductContext = createContext();
+import { createContext, useState } from 'react';
 
-export function ProductProvider({ children }) {
+export const ProductContext = createContext();
+
+export const ProductProvider = ({ children }) => {
   const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const db = getFirestore();
-        const productsCollection = collection(db, 'products');
-        const productsSnapshot = await getDocs(productsCollection);
-        
-        const productsData = productsSnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        }));
-
-        setProducts(productsData);
-        setError(null);
-      } catch (err) {
-        console.error('Error fetching products:', err);
-        setError('Failed to load products');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, []);
+  const value = {
+    products,
+    setProducts,
+    loading,
+    setLoading,
+    error,
+    setError
+  };
 
   return (
-    <ProductContext.Provider value={{ products, loading, error }}>
+    <ProductContext.Provider value={value}>
       {children}
     </ProductContext.Provider>
   );
-}
-
-export function useProducts() {
-  const context = useContext(ProductContext);
-  if (!context) {
-    throw new Error('useProducts must be used within a ProductProvider');
-  }
-  return context;
-}
+};

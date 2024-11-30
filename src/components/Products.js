@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
+import '../styles/Products.css';
 
 // Helper function for Google Drive URLs
 const convertGoogleDriveUrl = (url) => {
@@ -195,11 +196,12 @@ function Products() {
       {/* Add the carousel under the product section */}
       <div className="related-products">
         <h2>Prodotti Correlati</h2>
-        <div className="product-carousel">
+        <div className="product-grid">
           {relatedProducts.map((item) => (
-            <div key={item.id} className="carousel-item">
-              <img src={item.thumbnailUrl} alt={item.name} />
-              <h3>{item.name}</h3>
+            <div key={item.id} className="product-item">
+              <img src={item.thumbnailUrl} alt={item.name} className="product-image" />
+              <h3 className="product-name">{item.name}</h3>
+              <p className="product-description">{item.description}</p>
               <Link to={`/products/${item.id}`} className="view-product-button">
                 Visualizza Prodotto
               </Link>

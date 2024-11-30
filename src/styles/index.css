@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* Base styles */
 @import './base/variables.css';
 @import './base/reset.css';
@@ -10,8 +14,10 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #f5f5f5;
@@ -24,21 +30,9 @@ body {
   padding: 0 1rem;
 }
 
-/* Navigation styles */
-nav {
-  background-color: var(--white);
-  padding: 1rem 0;
-  box-shadow: var(--shadow);
-}
-
 /* Home page styles */
 .home-page {
   padding: 2rem 0;
-}
-
-h1 {
-  color: var(--text-color);
-  margin-bottom: 1rem;
 }
 
 /* Auth form styles */
@@ -86,4 +80,115 @@ h1 {
   display: grid;
   gap: 1rem;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+/* Hero section styles */
+.hero {
+  position: relative;
+  background: linear-gradient(45deg, #2b5876, #4e4376);
+  text-align: center;
+  padding: 100px 20px;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+}
+
+/* Remove or comment out the old hero h1 styles */
+/* .hero h1 { ... } */
+/* .hero h1 .studio { ... } */
+
+.hero-title {
+  font-family: 'Montserrat', sans-serif;
+  text-align: center;
+  color: #fff;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  line-height: 1.1;
+}
+
+.hero-title .main-title {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 2.5em;  /* Ridotto da 3em */
+  letter-spacing: -0.02em;
+  display: block;
+}
+
+.hero-title .studio {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  font-size: 2em;    /* Ridotto da 2.4em */
+  letter-spacing: 0.05em;
+  display: block;
+  margin-top: 5px;
+}
+
+.slogan {
+  font-size: 1.5em;
+  color: #fff;
+  margin-top: 20px;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+.cta-button {
+  background-color: #ff6600;
+  color: #fff;
+  padding: 15px 30px;
+  margin-top: 30px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background-color 0.3s;
+}
+
+.cta-button:hover {
+  background-color: #e65c00;
+}
+
+/* Header and Navigation styles */
+.header {
+  position: absolute;
+  width: 100%;
+  z-index: 10;
+}
+
+.main-nav {
+  background: transparent;
+  padding: 1rem 2rem;
+}
+
+.main-nav a {
+  color: #fff;
+  text-decoration: none;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .hero-title .main-title {
+    font-size: 2em;  /* Ridotto da 2.5em */
+  }
+  .hero-title .studio {
+    font-size: 1.6em;  /* Ridotto da 2em */
+  }
+  .hero {
+    padding: 80px 10px;
+  }
+  .slogan {
+    font-size: 1.2em;
+  }
+  .cta-button {
+    padding: 12px 24px;
+    font-size: 0.9em;
+  }
+  nav {
+    font-size: 1em;
+  }
+}
+
+/* Logo hover effect */
+.logo:hover {
+  color: #ff6600;
 }

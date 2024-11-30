@@ -7,12 +7,14 @@
     "@fontsource/bai-jamjuree": "^5.1.0",
     "@fontsource/bungee-hairline": "^5.1.0",
     "@fontsource/castoro-titling": "^5.1.0",
+    "@fontsource/montserrat": "^5.1.0",
     "@fontsource/tinos": "^5.1.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "@types/cors": "^2.8.17",
     "@types/nodemailer": "^6.4.16",
+    "@vercel/speed-insights": "^1.1.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "firebase": "^11.0.1",
@@ -24,7 +26,6 @@
     "react-router-dom": "^6.15.0",
     "react-scripts": "5.0.1",
     "safevillage": "file:",
-    "typescript": "^5.6.3",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -48,6 +49,10 @@
     ]
   },
   "devDependencies": {
-    "gh-pages": "^6.2.0"
+    "autoprefixer": "^10.4.20",
+    "gh-pages": "^6.2.0",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.15",
+    "typescript": "^4.9.5"
   }
 }

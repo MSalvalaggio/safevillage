@@ -3,6 +3,9 @@ import { Link, useLocation } from 'react-router-dom';
 import '@fontsource/bungee-hairline';
 import '@fontsource/bai-jamjuree';
 import '@fontsource/tinos';
+import '@fontsource/montserrat';
+import '@fontsource/montserrat/700.css'; // Bold weight
+import '@fontsource/montserrat/600.css'; // Semi-bold weight
 import './HomePage.css';
 import logo from '../../images/logo512.png';
 import { getLatestVideo, getChannelInfo } from '../../services/YouTubeService';
@@ -226,8 +229,8 @@ const HomePage = () => {
 
       <header className="hero" id="home">
         <div className="hero-content">
-          <h1>
-            SafeVillage
+          <h1 className="hero-title">
+            <span className="main-title">SafeVillage</span>
             <span className="studio">Studio</span>
           </h1>
         </div>
